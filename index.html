@@ -111,17 +111,6 @@
   .section { padding:160px 80px; max-width:1400px; margin:0 auto; }
   .section-label { font-size:11px; font-weight:600; letter-spacing:4px; color:var(--accent); text-transform:uppercase; margin-bottom:24px; }
 
-  /* ===== Cinema ===== */
-  .cinema { position:relative; width:100%; height:85dvh; overflow:hidden; display:flex; align-items:center; justify-content:center; }
-  .cinema video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:brightness(0.75); }
-  .cinema-overlay { position:absolute; inset:0; background:linear-gradient(0deg, rgba(242,242,244,0.3) 0%, transparent 30%, transparent 70%, rgba(242,242,244,0.3) 100%); z-index:1; }
-  .cinema-content { position:relative; z-index:2; text-align:center; }
-  .cinema-content h2 { font-family:'Space Grotesk','Segoe UI',sans-serif; font-size:clamp(24px,4vw,42px); font-weight:700; color:#fff; text-shadow:0 2px 40px rgba(0,0,0,0.3); margin-bottom:16px; }
-  .cinema-content p { font-size:15px; color:rgba(255,255,255,0.7); max-width:400px; }
-  .cinema-control { position:absolute; bottom:32px; right:40px; z-index:3; width:48px; height:48px; border-radius:50%; border:1px solid rgba(255,255,255,0.3); background:rgba(15,16,18,0.3); backdrop-filter:blur(12px); color:#fff; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.3s; }
-  .cinema-control:hover { background:rgba(15,16,18,0.6); border-color:#fff; }
-  @media (max-width:768px) { .cinema { height:50dvh; } .cinema-control { bottom:16px; right:16px; } }
-
   /* ===== Museum Gallery ===== */
   .gallery-grid { display:grid; grid-template-columns:1fr 1fr; gap:2px; }
   .gallery-item { position:relative; overflow:hidden; cursor:pointer; }
@@ -511,18 +500,6 @@ const cineObserver = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); cineObserver.unobserve(e.target); } });
 }, { threshold:0.7 });
 document.querySelectorAll('.cine-reveal').forEach(el => cineObserver.observe(el));
-
-// ===== Cinema Controls =====
-(function(){
-  var v = document.getElementById('cinema-video');
-  var b = document.getElementById('cinema-btn');
-  if(v && b) {
-    b.addEventListener('click', function(){
-      if(v.paused){ v.play(); b.textContent = '❚❚'; }
-      else { v.pause(); b.textContent = '▶'; }
-    });
-  }
-})();
 
 // ===== Scroll-Controlled Video =====
 (function(){
