@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AFLO — Deliver Mobility, Not Vehicles.</title>
+<!-- All offline — no CDN dependencies -->
+<style>
+  :root {
+    --bg: #F2F2F4; --text: #0F1012; --accent: #E96A22;
+    --text-secondary: rgba(15,16,18,0.48); --text-tertiary: rgba(15,16,18,0.2);
+    --border: rgba(15,16,18,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  /* Flowing orange fluid background */
+  .fluid-bg {
+    position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;
+  }
+  .fluid-bg .blob {
+    position:absolute; border-radius:50%; filter:blur(80px); opacity:0.25;
+    animation:flow 18s ease-in-out infinite;
+  }
+  .fluid-bg .blob:nth-child(1) {
+    width:600px; height:600px; background:#E96A22;
+    top:-200px; left:-100px; animation-delay:0s;
+  }
+  .fluid-bg .blob:nth-child(2) {
+    width:500px; height:500px; background:#F4A823;
+    bottom:-150px; right:-100px; animation-delay:-6s;
+  }
+  .fluid-bg .blob:nth-child(3) {
+    width:400px; height:400px; background:#E0453B;
+    top:40%; left:50%; animation-delay:-12s;
+  }
+  @keyframes flow {
+    0%,100% { transform:translate(0,0) scale(1); }
+    25% { transform:translate(200px,-100px) scale(1.3); }
+    50% { transform:translate(-100px,150px) scale(0.8); }
+    75% { transform:translate(-200px,-50px) scale(1.2); }
+  }
+  /* All content above fluid */
+  .nav,.hero,.section,.vision,.particle-foot,.footer { position:relative; z-index:1; }
+  h1,h2,h3 { font-family:'Space Grotesk','PingFang SC',sans-serif; font-weight:600; letter-spacing:-0.02em; }
+
+  /* ===== Floating Capsule Nav ===== */
+  .nav {
+    position:fixed; top:24px; left:50%; transform:translateX(-50%) scale(1);
+    z-index:100; display:flex; align-items:center; gap:32px;
+    padding:12px 32px; border-radius:40px;
+    background:rgba(242,242,244,0.72); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    border:1px solid rgba(15,16,18,0.06);
+    box-shadow:0 2px 20px rgba(15,16,18,0.04);
+    transition:transform 0.5s cubic-bezier(0.16,1,0.3,1), box-shadow 0.5s;
+    list-style:none;
+  }
+  .nav.scrolled { transform:translateX(-50%) scale(0.94); box-shadow:0 4px 30px rgba(15,16,18,0.06); }
+  .nav a { color:var(--text-secondary); text-decoration:none; font-size:13px; font-weight:500; letter-spacing:0.5px; transition:color 0.3s; }
+  .nav a:hover { color:var(--text); }
+  .nav .nav-brand { font-family:'Space Grotesk',sans-serif; font-size:16px; font-weight:700; letter-spacing:4px; color:var(--text); }
+
+  /* ===== Hero ===== */
+  .hero {
+    position:relative; width:100%; min-height:100dvh;
+    display:flex; align-items:flex-end; padding:120px 80px 80px;
+  }
+  .hero-img {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:clamp(320px,50vw,680px); z-index:0;
+  }
+  .hero-img img { width:100%; height:auto; display:block; }
+  .hero-content { position:relative; z-index:1; max-width:480px; }
+  .hero-content .h-label { font-size:11px; font-weight:600; letter-spacing:5px; color:var(--accent); text-transform:uppercase; margin-bottom:16px; }
+  .hero-content h1 { font-family:'Space Grotesk',sans-serif; font-size:clamp(38px,6vw,64px); font-weight:700; letter-spacing:-1.5px; line-height:1.05; }
+  .hero-content p { font-size:16px; color:var(--text-secondary); margin:20px 0 32px; max-width:360px; line-height:1.7; }
+  .btn { display:inline-block; padding:14px 32px; border-radius:28px; background:var(--text); color:var(--bg); font-size:14px; font-weight:600; letter-spacing:0.5px; text-decoration:none; transition:all 0.3s; border:none; cursor:pointer; }
+  .btn:hover { background:var(--accent); transform:scale(1.02); }
+
+  /* ===== Scroll Reveal ===== */
+  .reveal { opacity:0; transform:translateY(48px); transition:opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+
+  /* ===== Section Shared ===== */
+  .section { padding:160px 80px; max-width:1400px; margin:0 auto; }
+  .section-label { font-size:11px; font-weight:600; letter-spacing:4px; color:var(--accent); text-transform:uppercase; margin-bottom:24px; }
+
+  /* ===== Museum Gallery ===== */
+  .gallery-grid { display:grid; grid-template-columns:1fr 1fr; gap:2px; }
+  .gallery-item { position:relative; overflow:hidden; cursor:pointer; }
+  .gallery-item img { width:100%; height:100%; object-fit:cover; transition:transform 0.7s cubic-bezier(0.16,1,0.3,1); }
+  .gallery-item:hover img { transform:scale(1.04); }
+  .gallery-item .gi-overlay {
+    position:absolute; inset:0; background:linear-gradient(0deg, rgba(15,16,18,0.5) 0%, transparent 50%);
+    display:flex; align-items:flex-end; padding:40px; opacity:0; transition:opacity 0.4s;
+  }
+  .gallery-item:hover .gi-overlay { opacity:1; }
+  .gi-overlay h3 { font-family:'Space Grotesk',sans-serif; font-size:22px; color:#fff; font-weight:600; letter-spacing:2px; }
+  .gi-overlay p { font-size:13px; color:rgba(255,255,255,0.7); margin-top:4px; }
+
+  /* ===== Asymmetric Split ===== */
+  .asymmetric { display:grid; grid-template-columns:0.45fr 0.55fr; gap:120px; align-items:center; }
+  .asymmetric.reverse { grid-template-columns:0.55fr 0.45fr; }
+  .asymmetric.reverse .as-img { order:2; }
+  .as-img img { width:100%; border-radius:4px; }
+  .as-text h2 { font-family:'Space Grotesk',sans-serif; font-size:clamp(26px,4vw,40px); font-weight:700; line-height:1.15; margin-bottom:20px; }
+  .as-text p { font-size:15px; color:var(--text-secondary); line-height:1.8; }
+  .as-specs { display:flex; gap:32px; margin-top:28px; }
+  .as-spec .val { font-family:'Space Grotesk',sans-serif; font-size:28px; font-weight:700; color:var(--accent); }
+  .as-spec .lbl { font-size:11px; color:var(--text-tertiary); letter-spacing:1px; margin-top:2px; }
+
+  /* ===== Feature Cards — minimal ===== */
+  .feat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:40px; }
+  .feat-card { padding:0; }
+  .feat-card .fc-num { font-family:'Space Grotesk',sans-serif; font-size:13px; color:var(--text-tertiary); letter-spacing:3px; margin-bottom:12px; }
+  .feat-card h3 { font-size:20px; margin-bottom:8px; }
+  .feat-card p { font-size:14px; color:var(--text-secondary); line-height:1.7; }
+
+  /* ===== Stats Row ===== */
+  .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:40px; }
+  .stat-item .num { font-family:'Space Grotesk',sans-serif; font-size:clamp(36px,5vw,56px); font-weight:700; color:var(--accent); line-height:1; margin-bottom:8px; }
+  .stat-item .label { font-size:13px; color:var(--text-secondary); }
+
+  /* ===== Vision ===== */
+  .vision {
+    padding:200px 80px; text-align:center; max-width:720px; margin:0 auto;
+  }
+  .vision h2 { font-family:'Space Grotesk',sans-serif; font-size:clamp(30px,5vw,48px); font-weight:700; line-height:1.12; margin-bottom:20px; }
+  .vision h2 span { color:var(--accent); }
+  .vision p { font-size:17px; color:var(--text-secondary); line-height:1.9; margin-bottom:36px; }
+
+  /* Footer */
+  /* Gallery Expand */
+  .gallery-expand {
+    position:fixed; inset:0; z-index:200;
+    backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+    background:rgba(242,242,244,0.55);
+    display:flex; align-items:center; justify-content:center; padding:80px;
+    opacity:0; pointer-events:none; transition:opacity 0.5s, visibility 0s 0.5s;
+    visibility:hidden;
+  }
+  .gallery-expand.open { opacity:1; pointer-events:auto; visibility:visible; transition:opacity 0.5s, visibility 0s 0s; }
+  .gallery-expand .ge-inner {
+    display:grid; grid-template-columns:1.3fr 0.7fr; gap:64px; align-items:center;
+    max-width:1200px; width:100%;
+  }
+  .gallery-expand .ge-img img {
+    width:100%; border-radius:8px; box-shadow:0 30px 80px rgba(15,16,18,0.15);
+    transform:scale(0.92); transition:transform 0.7s cubic-bezier(0.16,1,0.3,1);
+  }
+  .gallery-expand.open .ge-img img { transform:scale(1); }
+  .gallery-expand .ge-text {
+    filter:blur(12px); opacity:0; transform:translateY(20px);
+    transition:filter 0.6s ease-out, opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.16,1,0.3,1);
+  }
+  .gallery-expand.open .ge-text {
+    filter:blur(0); opacity:1; transform:translateY(0);
+  }
+  .gallery-expand .ge-text h2 {
+    font-family:'Space Grotesk','Segoe UI',sans-serif; font-size:clamp(28px,4vw,44px);
+    font-weight:700; line-height:1.15; margin-bottom:16px;
+  }
+  .gallery-expand .ge-text .ge-desc { font-size:15px; color:var(--text-secondary); line-height:1.9; margin-bottom:24px; }
+  .gallery-expand .ge-specs { display:flex; gap:28px; flex-wrap:wrap; margin-bottom:28px; }
+  .gallery-expand .ge-spec .v { font-family:'Space Grotesk','Segoe UI',sans-serif; font-size:26px; font-weight:700; color:var(--accent); }
+  .gallery-expand .ge-spec .l { font-size:11px; color:var(--text-tertiary); letter-spacing:1px; margin-top:2px; }
+  .gallery-expand .ge-close {
+    position:absolute; top:28px; right:40px; width:48px; height:48px;
+    border-radius:50%; border:1px solid var(--border); background:rgba(242,242,244,0.6);
+    backdrop-filter:blur(12px); font-size:22px; color:var(--text);
+    cursor:pointer; transition:all 0.3s; display:flex; align-items:center; justify-content:center; z-index:10;
+  }
+  .gallery-expand .ge-close:hover { background:var(--text); color:var(--bg); }
+  @media (max-width:768px) {
+    .gallery-expand { padding:80px 20px 40px; }
+    .gallery-expand .ge-inner { grid-template-columns:1fr; gap:32px; }
+    .gallery-expand .ge-close { top:16px; right:16px; }
+  }
+
+  .footer { border-top:1px solid var(--border); padding:40px 80px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; }
+  .footer .brand { font-family:'Space Grotesk',sans-serif; font-size:14px; font-weight:700; letter-spacing:4px; }
+  .footer .copy { font-size:12px; color:var(--text-tertiary); }
+
+  /* Particle */
+  .particle-foot { height:200px; background:var(--bg); cursor:crosshair; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+  .particle-foot canvas { position:absolute; inset:0; width:100%; height:100%; }
+  .particle-foot .pf-text { position:relative; z-index:1; font-family:'Space Grotesk',sans-serif; font-size:14px; color:var(--text-tertiary); letter-spacing:4px; pointer-events:none; }
+
+  @media (max-width:768px) {
+    .nav { gap:16px; padding:10px 20px; }
+    .nav a { font-size:11px; }
+    .hero { padding:160px 24px 60px; }
+    .hero-img { width:80vw; }
+    .section { padding:80px 24px; }
+    .gallery-grid { grid-template-columns:1fr; }
+    .asymmetric,.asymmetric.reverse { grid-template-columns:1fr; gap:40px; }
+    .asymmetric.reverse .as-img { order:-1; }
+    .stats-row { grid-template-columns:repeat(2,1fr); }
+    .feat-grid { grid-template-columns:1fr; gap:32px; }
+    .vision { padding:100px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Fluid Background -->
+<div class="fluid-bg">
+  <div class="blob"></div><div class="blob"></div><div class="blob"></div>
+</div>
+
+<!-- Floating Capsule Nav -->
+<nav class="nav" id="nav">
+  <a href="#" class="nav-brand">AFLO</a>
+  <a href="#platform">Platform</a>
+  <a href="#gallery">Gallery</a>
+  <a href="#features">Features</a>
+  <a href="#impact">Impact</a>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="hero">
+  <div class="hero-img reveal">
+    <img src="image/base.png" alt="AFLO Platform">
+  </div>
+  <div class="hero-content reveal">
+    <p class="h-label">Africa Flow</p>
+    <h1>Deliver Mobility.<br>Not Vehicles.</h1>
+    <p>A modular autonomous logistics platform built for Africa. Not a vehicle — infrastructure.</p>
+    <a href="#platform" class="btn">Explore</a>
+  </div>
+</section>
+
+<!-- ===== MODEL SWITCHER ===== -->
+<section class="section" id="models" style="padding-top:80px;">
+  <p class="section-label reveal">Choose Your AFLO</p>
+  <div class="model-stage reveal">
+    <div class="model-display" id="model-display">
+      <img src="image/base.png" alt="Platform" id="model-img">
+      <div class="model-info" id="model-info">
+        <h3>Platform</h3>
+        <p>The autonomous chassis. 8 hot-swap interfaces. The starting point for everything.</p>
+      </div>
+    </div>
+    <div class="model-tabs" id="model-tabs">
+      <button class="mtab active" data-img="image/base.png" data-name="Platform" data-desc="The autonomous chassis. 8 hot-swap interfaces. The starting point for everything.">
+        Platform
+      </button>
+      <button class="mtab" data-img="image/express.png" data-name="Express" data-desc="Last-mile delivery redefined. 24 smart compartments. The courier deserves dignity.">
+        Express
+      </button>
+      <button class="mtab" data-img="image/cold.png" data-name="Cold Chain" data-desc="±0.3°C precision. Dual compressors. Vaccines and ice cream both deserve better.">
+        Cold Chain
+      </button>
+      <button class="mtab" data-img="image/cargo.png" data-name="Cargo" data-desc="800 kg payload. 120 km range. One fleet manager, fifty units. Zero accidents.">
+        Cargo
+      </button>
+      <button class="mtab" data-img="image/shop.png" data-name="Mobile Shop" data-desc="6 m² retail. 30-minute setup. Open a store without signing a lease.">
+        Mobile Shop
+      </button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .model-stage { margin-top:40px; }
+  .model-display { position:relative; overflow:hidden; border-radius:8px; margin-bottom:24px; }
+  .model-display img { width:100%; max-height:500px; object-fit:cover; transition:opacity 0.5s; border-radius:8px; }
+  .model-info { padding:32px 0 0; }
+  .model-info h3 { font-family:'Space Grotesk','Segoe UI',sans-serif; font-size:28px; font-weight:700; margin-bottom:8px; }
+  .model-info p { font-size:15px; color:var(--text-secondary); max-width:500px; line-height:1.7; }
+  .model-tabs { display:flex; gap:8px; flex-wrap:wrap; }
+  .mtab {
+    padding:10px 20px; border-radius:24px; border:1px solid var(--border);
+    background:transparent; color:var(--text-secondary); font-size:13px;
+    font-weight:500; font-family:'Inter','PingFang SC',sans-serif;
+    letter-spacing:0.5px; cursor:pointer; transition:all 0.35s;
+  }
+  .mtab:hover { border-color:var(--accent); color:var(--accent); }
+  .mtab.active { border-color:var(--accent); background:var(--accent); color:#fff; }
+  @media (max-width:768px) {
+    .model-display img { max-height:300px; }
+  }
+</style>
+
+<script>
+(function() {
+  const img = document.getElementById('model-img');
+  const info = document.getElementById('model-info');
+  const tabs = document.querySelectorAll('.mtab');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      img.style.opacity = '0';
+      setTimeout(() => {
+        img.src = tab.dataset.img;
+        img.onload = () => { img.style.opacity = '1'; };
+        info.querySelector('h3').textContent = tab.dataset.name;
+        info.querySelector('p').textContent = tab.dataset.desc;
+      }, 250);
+    });
+  });
+})();
+</script>
+
+<!-- ===== PLATFORM ===== -->
+<section class="section" id="platform">
+  <p class="section-label reveal">Platform</p>
+  <div class="asymmetric reveal">
+    <div class="as-text">
+      <h2>One platform.<br>Multiple missions.</h2>
+      <p>Five configurations. One autonomous chassis. Hot-swappable tops in under five minutes — no tools, no engineers, no manual. This is what modularity actually looks like.</p>
+      <div class="as-specs">
+        <div class="as-spec"><div class="val">5<small style="font-size:16px;"> min</small></div><div class="lbl">Swap Time</div></div>
+        <div class="as-spec"><div class="val">L4</div><div class="lbl">Autonomy</div></div>
+        <div class="as-spec"><div class="val">8</div><div class="lbl">Interfaces</div></div>
+      </div>
+    </div>
+    <div class="as-img"><img src="image/base.png" alt="Platform"></div>
+  </div>
+</section>
+
+<!-- ===== MUSEUM GALLERY ===== -->
+<section class="section" id="gallery" style="max-width:100%; padding-left:0; padding-right:0;">
+  <div style="max-width:1400px; margin:0 auto; padding:0 80px;">
+    <p class="section-label reveal">Gallery</p>
+  </div>
+  <div class="gallery-grid reveal">
+    <div class="gallery-item" data-key="express">
+      <img src="image/express.png" alt="Express" loading="lazy">
+      <div class="gi-overlay"><div><h3>Express</h3><p>Last-mile delivery, redefined.</p></div></div>
+    </div>
+    <div class="gallery-item" data-key="cold">
+      <img src="image/cold.png" alt="Cold Chain" loading="lazy">
+      <div class="gi-overlay"><div><h3>Cold Chain</h3><p>±0.3°C precision. Farm to market.</p></div></div>
+    </div>
+    <div class="gallery-item" data-key="cargo">
+      <img src="image/cargo.png" alt="Cargo" loading="lazy">
+      <div class="gi-overlay"><div><h3>Cargo</h3><p>800 kg. One fleet manager. Fifty units.</p></div></div>
+    </div>
+    <div class="gallery-item" data-key="shop">
+      <img src="image/shop.png" alt="Mobile Shop" loading="lazy">
+      <div class="gi-overlay"><div><h3>Mobile Shop</h3><p>6 m². Zero rent. Infinite reach.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COLD CHAIN FOCUS ===== -->
+<section class="section">
+  <div class="asymmetric reverse reveal">
+    <div class="as-text">
+      <p class="section-label">Cold Chain</p>
+      <h2>The difference between<br>good and gone.</h2>
+      <p>Africa holds 60% of the world's uncultivated arable land. 30% of harvests are lost to inadequate cold chain. AFLO Cold Chain delivers ±0.3°C precision with dual compressors and a 6-hour power-loss buffer. Because vaccines and ice cream both deserve better.</p>
+      <div class="as-specs">
+        <div class="as-spec"><div class="val">±0.3°C</div><div class="lbl">Precision</div></div>
+        <div class="as-spec"><div class="val">-25~8°C</div><div class="lbl">Range</div></div>
+        <div class="as-spec"><div class="val">6h</div><div class="lbl">Buffer</div></div>
+      </div>
+    </div>
+    <div class="as-img"><img src="image/cold.png" alt="Cold Chain"></div>
+  </div>
+</section>
+
+<!-- ===== FEATURES ===== -->
+<section class="section" id="features">
+  <p class="section-label reveal">Features</p>
+  <div class="feat-grid reveal">
+    <div class="feat-card"><div class="fc-num">01</div><h3>Modular</h3><p>One chassis. Five tops. Swap in five minutes. Real modularity — not a marketing term.</p></div>
+    <div class="feat-card"><div class="fc-num">02</div><h3>Rugged</h3><p>IP68 rated. Tested from Saharan dust to monsoon mud. Not in a lab — on real roads.</p></div>
+    <div class="feat-card"><div class="fc-num">03</div><h3>Affordable</h3><p>60% lower operating cost than combustion alternatives. Electric drive, modular repair, autonomous operation.</p></div>
+    <div class="feat-card"><div class="fc-num">04</div><h3>Maintainable</h3><p>Replace what breaks. Local technicians can service it. In Africa, this is not a feature — it's a requirement.</p></div>
+    <div class="feat-card"><div class="fc-num">05</div><h3>Sustainable</h3><p>All-electric. Solar-compatible. 8-year powertrain warranty. We're investing in Africa's future.</p></div>
+  </div>
+</section>
+
+<!-- ===== IMPACT ===== -->
+<section class="section" id="impact">
+  <p class="section-label reveal">Impact</p>
+  <div class="stats-row reveal">
+    <div class="stat-item"><div class="num">5</div><div class="label">Configurations</div></div>
+    <div class="stat-item"><div class="num">80%</div><div class="label">Lower Delivery Cost</div></div>
+    <div class="stat-item"><div class="num">3×</div><div class="label">Greater Reach</div></div>
+    <div class="stat-item"><div class="num">24/7</div><div class="label">Availability</div></div>
+  </div>
+</section>
+
+<!-- ===== VISION ===== -->
+<section class="vision reveal" id="vision">
+  <h2>Deliver Mobility.<br><span>Not Vehicles.</span></h2>
+  <p>Four years. One focus. Making logistics worthy of this era. The future of Africa isn't built on aid — it's built on AFLOs, route by route, community by community.</p>
+  <a href="#" class="btn">Contact Us</a>
+</section>
+
+<!-- Particle Footer -->
+<div class="particle-foot" id="particle-foot">
+  <canvas id="particle-canvas"></canvas>
+  <p class="pf-text">Designed by Kaiyuan Shengshi</p>
+</div>
+
+<footer class="footer">
+  <span class="brand">AFLO</span>
+  <span class="copy">© 2026 AFLO Inc. Deliver Mobility, Not Vehicles.</span>
+</footer>
+
+<script>
+// ===== Scroll Reveal =====
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold:0.12 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ===== Nav Scroll Scale =====
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 80);
+}, { passive:true });
+
+// ===== Magnetic Hover =====
+document.querySelectorAll('.gallery-item,.btn').forEach(el => {
+  el.addEventListener('mousemove', e => {
+    const rect = el.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    el.style.transform = `perspective(800px) rotateY(${x*4}deg) rotateX(${-y*3}deg) translateZ(4px)`;
+  });
+  el.addEventListener('mouseleave', () => {
+    el.style.transform = 'perspective(800px) rotateY(0deg) rotateX(0deg) translateZ(0)';
+    el.style.transition = 'transform 0.6s cubic-bezier(0.16,1,0.3,1)';
+  });
+  el.addEventListener('mouseenter', () => { el.style.transition = 'transform 0.15s ease-out'; });
+});
+
+// ===== Gallery Expand =====
+const galleryData = {
+  express:{ img:'image/express.png',title:'Express',
+    desc:'Last-mile delivery, redefined for African cities. 24 smart compartments. Automatic lift gate. The courier no longer battles the elements. We interviewed 137 couriers. They average 312 bends per day, 47 km on the road. This industry deserves better.',
+    specs:[['120','parcels/trip'],['8h','endurance'],['24','compartments'],['-5°C','cool zone']]},
+  cold:{ img:'image/cold.png',title:'Cold Chain',
+    desc:'Africa holds 60% of the world\'s uncultivated arable land, yet 30% of harvests are lost to inadequate cold chain. AFLO Cold Chain delivers -25°C to 8°C with ±0.3°C precision. Dual compressors. 6-hour power-loss buffer. Real-time cloud monitoring.',
+    specs:[['±0.3°C','precision'],['-25~8°C','range'],['6h','buffer'],['Dual','compressors']]},
+  cargo:{ img:'image/cargo.png',title:'Cargo',
+    desc:'800 kg payload. 120 km range. L4 autonomous driving. One fleet manager can coordinate 50 units from a single dashboard. 2 million kilometers tested on African urban roads. Zero accidents.',
+    specs:[['800kg','payload'],['120km','range'],['2M km','tested'],['50','fleet size']]},
+  shop:{ img:'image/shop.png',title:'Mobile Shop',
+    desc:'In rural communities, opening a physical store means rent, renovation, inventory — the costs stack before you even begin. AFLO Mobile Shop drops that barrier to zero. 6 m² retail space, three-sided deployment, 30-minute setup.',
+    specs:[['6m²','retail space'],['30min','setup'],['3','counters'],['$0','rent']]}
+};
+
+const ge = document.getElementById('gallery-expand');
+const geImg = document.getElementById('ge-img');
+const geTitle = document.getElementById('ge-title');
+const geDesc = document.getElementById('ge-desc');
+const geSpecs = document.getElementById('ge-specs');
+
+function openExpand(key) {
+  const d = galleryData[key]; if (!d) return;
+  // Reset transition for instant image swap
+  geImg.style.transition = 'none';
+  geImg.style.transform = 'scale(0.92)';
+  geImg.src = d.img;
+  geTitle.textContent = d.title;
+  geDesc.textContent = d.desc;
+  geSpecs.innerHTML = d.specs.map(s => '<div class=\"ge-spec\"><div class=\"v\">'+s[0]+'</div><div class=\"l\">'+s[1]+'</div></div>').join('');
+  // Reset blur on text for re-animation
+  ge.querySelector('.ge-text').style.filter = 'blur(12px)';
+  ge.querySelector('.ge-text').style.opacity = '0';
+  ge.querySelector('.ge-text').style.transform = 'translateY(20px)';
+  ge.classList.add('open');
+  // Trigger image scale + text unblur after paint
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      geImg.style.transition = 'transform 0.7s cubic-bezier(0.16,1,0.3,1)';
+      geImg.style.transform = 'scale(1)';
+    });
+  });
+}
+
+function closeExpand() {
+  ge.classList.remove('open');
+}
+
+document.querySelectorAll('.gallery-item').forEach(item => {
+  item.addEventListener('click', () => openExpand(item.dataset.key));
+});
+document.getElementById('ge-close').addEventListener('click', closeExpand);
+ge.addEventListener('click', e => { if (e.target === ge) closeExpand(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeExpand(); });
+
+// ===== Smooth Nav Scroll =====
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior:'smooth' });
+  });
+});
+
+// ===== Particle Footer =====
+(function() {
+  const container = document.getElementById('particle-foot');
+  const canvas = document.getElementById('particle-canvas');
+  const ctx = canvas.getContext('2d');
+  const TEXT = 'Designed by Kaiyuan Shengshi';
+  const R = 80;
+  let W, H, particles=[], targets=[];
+  let mouse={x:-999,y:-999,active:false}, anim;
+
+  function resize() {
+    const r = container.getBoundingClientRect();
+    W = canvas.width = r.width; H = canvas.height = r.height;
+    if (W<10||H<10) { setTimeout(resize,300); return; }
+    genTargets();
+  }
+  function genTargets() {
+    if(W<10||H<10) return;
+    const w=W,h=H,fs=Math.min(w/TEXT.length*2.2,h*0.5);
+    const off=document.createElement('canvas'); off.width=w; off.height=h;
+    const oc=off.getContext('2d');
+    oc.font='600 '+fs+'px "Segoe UI",sans-serif';
+    oc.textAlign='center'; oc.textBaseline='middle'; oc.fillText(TEXT,w/2,h/2);
+    const d=oc.getImageData(0,0,w,h).data;
+    targets=[];
+    const step=Math.max(3,Math.floor(w/180));
+    for(let y=0;y<h;y+=step)for(let x=0;x<w;x+=step)if(d[(y*w+x)*4+3]>80)targets.push({x,y});
+    const old=particles;
+    particles=targets.map((t,i)=>({x:old[i]?old[i].x:Math.random()*w,y:old[i]?old[i].y:Math.random()*h,tx:t.x,ty:t.y,vx:0,vy:0}));
+  }
+  function update() {
+    for(const p of particles) {
+      const dx=mouse.x-p.x,dy=mouse.y-p.y,dist=Math.sqrt(dx*dx+dy*dy);
+      if(mouse.active&&dist<R){const f=((R-dist)/R)**2;p.vx-=(dx/dist)*f*3;p.vy-=(dy/dist)*f*3;}
+      p.vx+=(p.tx-p.x)*0.04;p.vy+=(p.ty-p.y)*0.04;p.vx*=.84;p.vy*=.84;p.x+=p.vx;p.y+=p.vy;
+    }
+  }
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    for(const p of particles) {
+      const dx=mouse.x-p.x,dy=mouse.y-p.y,dist=Math.sqrt(dx*dx+dy*dy);
+      const s=mouse.active&&dist<R,t=s?1-dist/R:0;
+      ctx.fillStyle=s?'rgba(15,16,18,'+(.3+t*.5)+')':'rgba(15,16,18,.28)';
+      ctx.beginPath();ctx.arc(p.x,p.y,s?1.2+t*2:1.3,0,Math.PI*2);ctx.fill();
+    }
+  }
+  function loop(){update();draw();anim=requestAnimationFrame(loop);}
+  container.addEventListener('mousemove',e=>{const r=container.getBoundingClientRect();mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top;mouse.active=true;},{passive:true});
+  container.addEventListener('mouseleave',()=>{mouse.active=false;});
+  window.addEventListener('resize',()=>{cancelAnimationFrame(anim);resize();loop();});
+  function boot(){ resize(); loop(); }
+  if(document.readyState==='complete'||document.readyState==='interactive'){ setTimeout(boot,100); }
+  else { document.addEventListener('DOMContentLoaded', ()=>setTimeout(boot,100)); }
+})();
+</script>
+<!-- Gallery Expand -->
+<div class="gallery-expand" id="gallery-expand">
+  <button class="ge-close" id="ge-close">✕</button>
+  <div class="ge-inner">
+    <div class="ge-img"><img src="" alt="" id="ge-img"></div>
+    <div class="ge-text">
+      <h2 id="ge-title"></h2>
+      <p class="ge-desc" id="ge-desc"></p>
+      <div class="ge-specs" id="ge-specs"></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
