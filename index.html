@@ -65,20 +65,31 @@
   .nav .lang-switch:hover { border-color:var(--accent); color:var(--accent); background:rgba(233,106,34,0.06); }
   .nav .nav-brand { font-family:'Space Grotesk',sans-serif; font-size:16px; font-weight:700; letter-spacing:4px; color:var(--text); }
 
-  /* ===== Hero ===== */
-  .hero {
-    position:relative; width:100%; min-height:100dvh;
-    display:flex; align-items:flex-end; padding:120px 80px 80px;
+  /* ===== Scroll-Controlled Video Hero ===== */
+  .video-hero-wrap { position:relative; height:350vh; }
+  .video-hero-sticky { position:sticky; top:0; height:100dvh; overflow:hidden; }
+  .video-hero-sticky video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .video-hero-overlay {
+    position:absolute; inset:0; z-index:1; pointer-events:none;
+    background:linear-gradient(0deg, rgba(242,242,244,0.6) 0%, transparent 30%, transparent 70%, rgba(242,242,244,0.4) 100%);
   }
-  .hero-img {
-    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-    width:clamp(320px,50vw,680px); z-index:0;
+  .video-hero-text {
+    position:absolute; bottom:80px; left:80px; z-index:2;
+    max-width:500px; transition:opacity 0.3s;
   }
-  .hero-img img { width:100%; height:auto; display:block; }
-  .hero-content { position:relative; z-index:1; max-width:480px; }
-  .hero-content .h-label { font-size:11px; font-weight:600; letter-spacing:5px; color:var(--accent); text-transform:uppercase; margin-bottom:16px; }
-  .hero-content h1 { font-family:'Space Grotesk',sans-serif; font-size:clamp(38px,6vw,64px); font-weight:700; letter-spacing:-1.5px; line-height:1.05; }
-  .hero-content p { font-size:16px; color:var(--text-secondary); margin:20px 0 32px; max-width:360px; line-height:1.7; }
+  .video-hero-text h1 { font-family:'Space Grotesk','Segoe UI',sans-serif; font-size:clamp(36px,6vw,60px); font-weight:700; color:#fff; text-shadow:0 2px 40px rgba(0,0,0,0.5); line-height:1.08; }
+  .video-hero-text p { font-size:16px; color:rgba(255,255,255,0.8); margin-top:12px; }
+  .video-hero-hint {
+    position:absolute; bottom:28px; left:50%; transform:translateX(-50%); z-index:2;
+    color:rgba(255,255,255,0.6); font-size:11px; letter-spacing:3px; text-transform:uppercase;
+    transition:opacity 0.5s;
+  }
+  @media (max-width:768px) {
+    .video-hero-wrap { height:250vh; }
+    .video-hero-text { bottom:40px; left:24px; right:24px; }
+    .video-hero-text h1 { font-size:clamp(28px,8vw,44px); }
+  }
+
   .btn { display:inline-block; padding:14px 32px; border-radius:28px; background:var(--text); color:var(--bg); font-size:14px; font-weight:600; letter-spacing:0.5px; text-decoration:none; transition:all 0.3s; border:none; cursor:pointer; }
   .btn:hover { background:var(--accent); transform:scale(1.02); }
 
@@ -244,16 +255,18 @@
   <a href="index-cn.html" class="lang-switch" title="切换到中文版">中文</a>
 </nav>
 
-<!-- ===== HERO ===== -->
-<section class="hero" id="hero">
-  <div class="hero-img reveal">
-    <img src="image/base.png" alt="AFLO Platform">
-  </div>
-  <div class="hero-content reveal">
-    <p class="h-label">Africa Flow</p>
-    <h1>Deliver Mobility.<br>Not Vehicles.</h1>
-    <p>A modular autonomous logistics platform built for Africa. Not a vehicle — infrastructure.</p>
-    <a href="#platform" class="btn">Explore</a>
+<!-- ===== SCROLL-CONTROLLED VIDEO HERO ===== -->
+<section class="video-hero-wrap" id="hero">
+  <div class="video-hero-sticky">
+    <video id="hero-video" muted playsinline preload="auto">
+      <source src="video.mp4" type="video/mp4">
+    </video>
+    <div class="video-hero-overlay"></div>
+    <div class="video-hero-text">
+      <h1>Deliver Mobility.<br>Not Vehicles.</h1>
+      <p>A modular autonomous logistics platform built for Africa.</p>
+    </div>
+    <div class="video-hero-hint" id="video-hint">Scroll to Explore</div>
   </div>
 </section>
 
@@ -330,19 +343,6 @@
   });
 })();
 </script>
-
-<!-- ===== CINEMA ===== -->
-<section class="cinema cine-reveal" id="cinema">
-  <video id="cinema-video" autoplay muted loop playsinline>
-    <source src="video.mp4" type="video/mp4">
-  </video>
-  <div class="cinema-overlay"></div>
-  <div class="cinema-content">
-    <h2>Watch the Story</h2>
-    <p>See AFLO in motion across African roads.</p>
-  </div>
-  <button class="cinema-control" id="cinema-btn" title="Pause">❚❚</button>
-</section>
 
 <!-- ===== PLATFORM ===== -->
 <section class="section" id="platform">
@@ -522,6 +522,45 @@ document.querySelectorAll('.cine-reveal').forEach(el => cineObserver.observe(el)
       else { v.pause(); b.textContent = '▶'; }
     });
   }
+})();
+
+// ===== Scroll-Controlled Video =====
+(function(){
+  var wrap = document.querySelector('.video-hero-wrap');
+  var video = document.getElementById('hero-video');
+  var hint = document.getElementById('video-hint');
+  if (!wrap || !video) return;
+
+  var ticking = false;
+  video.pause();
+
+  function updateVideo() {
+    var rect = wrap.getBoundingClientRect();
+    var wrapHeight = wrap.offsetHeight;
+    var viewH = window.innerHeight;
+    // How far into the wrap are we: 0 (top) to 1 (bottom past viewport)
+    var scrollStart = -rect.top;
+    var scrollRange = wrapHeight - viewH;
+    var progress = Math.max(0, Math.min(1, scrollStart / scrollRange));
+
+    if (video.readyState >= 2) {
+      video.currentTime = progress * video.duration;
+    }
+
+    // Hide hint after scrolling starts
+    if (hint && progress > 0.02) hint.style.opacity = '0';
+    else if (hint) hint.style.opacity = '1';
+
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', function() {
+    if (!ticking) { requestAnimationFrame(updateVideo); ticking = true; }
+  }, { passive: true });
+
+  // Ensure video is loaded
+  video.addEventListener('loadedmetadata', updateVideo);
+  updateVideo();
 })();
 
 // ===== Smooth Scroll =====
