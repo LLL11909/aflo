@@ -69,8 +69,19 @@
 
   /* ===== Scroll-Controlled Video Hero ===== */
   .video-hero-wrap { position:relative; height:400vh; }
-  .video-hero-sticky { position:sticky; top:0; height:100dvh; overflow:hidden; }
-  .video-hero-sticky video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .video-hero-sticky { position:sticky; top:0; height:100dvh; overflow:hidden; background:#000; }
+  .video-hero-sticky video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:opacity 0.8s; }
+  .video-hero-loading {
+    position:absolute; inset:0; z-index:5; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    background:#0A0A0A; transition:opacity 0.6s; pointer-events:none;
+  }
+  .video-hero-loading.hidden { opacity:0; }
+  .video-hero-loading .spinner {
+    width:40px; height:40px; border:2px solid rgba(255,255,255,0.1); border-top-color:var(--accent);
+    border-radius:50%; animation:spin 1s linear infinite; margin-bottom:16px;
+  }
+  .video-hero-loading p { color:rgba(255,255,255,0.4); font-size:13px; letter-spacing:2px; }
+  @keyframes spin { to { transform:rotate(360deg); } }
   .video-hero-overlay {
     position:absolute; inset:0; z-index:1; pointer-events:none;
     background:linear-gradient(0deg, rgba(242,242,244,0.6) 0%, transparent 30%, transparent 70%, rgba(242,242,244,0.4) 100%);
@@ -252,6 +263,10 @@
     <video id="hero-video" muted playsinline preload="auto">
       <source src="video.mp4" type="video/mp4">
     </video>
+    <div class="video-hero-loading" id="video-loading">
+      <div class="spinner"></div>
+      <p>Loading</p>
+    </div>
     <div class="video-hero-overlay"></div>
     <div class="video-hero-text">
       <h1>Deliver Mobility.<br>Not Vehicles.</h1>
@@ -534,10 +549,14 @@ if (video && wrap) {
     }
   });
 
-  // Preload video metadata
-  video.addEventListener('loadedmetadata', function() {
+  // Hide loading state when video can play
+  var loading = document.getElementById('video-loading');
+  video.addEventListener('canplay', function() {
+    if (loading) loading.classList.add('hidden');
     ScrollTrigger.refresh();
   });
+  // Fallback: hide after 8 seconds even if still loading
+  setTimeout(function() { if (loading) loading.classList.add('hidden'); }, 8000);
 }
 
 // ===== Smooth Scroll =====
