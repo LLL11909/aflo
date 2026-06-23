@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AFLO — Deliver Mobility, Not Vehicles.</title>
-<!-- All offline — no CDN dependencies -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 <style>
   :root {
     --bg: #F2F2F4; --text: #0F1012; --accent: #E96A22;
@@ -66,7 +68,7 @@
   .nav .nav-brand { font-family:'Space Grotesk',sans-serif; font-size:16px; font-weight:700; letter-spacing:4px; color:var(--text); }
 
   /* ===== Scroll-Controlled Video Hero ===== */
-  .video-hero-wrap { position:relative; height:280vh; }
+  .video-hero-wrap { position:relative; height:400vh; }
   .video-hero-sticky { position:sticky; top:0; height:100dvh; overflow:hidden; }
   .video-hero-sticky video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
   .video-hero-overlay {
@@ -501,48 +503,42 @@ const cineObserver = new IntersectionObserver(entries => {
 }, { threshold:0.7 });
 document.querySelectorAll('.cine-reveal').forEach(el => cineObserver.observe(el));
 
-// ===== Scroll-Controlled Video (Optimized) =====
-(function(){
-  var wrap = document.querySelector('.video-hero-wrap');
-  var video = document.getElementById('hero-video');
-  var hint = document.getElementById('video-hint');
-  if (!wrap || !video) return;
+// ===== Lenis Smooth Scroll =====
+var lenis = new Lenis({ duration:1.2, easing:function(t){ return Math.min(1, 1.001 - Math.pow(2, -10 * t)); }, smoothWheel:true });
+function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
+requestAnimationFrame(raf);
 
-  var ticking = false;
-  var lastTime = -1;
+// ===== GSAP ScrollTrigger Video Scrubbing =====
+gsap.registerPlugin(ScrollTrigger);
+
+var video = document.getElementById('hero-video');
+var hint = document.getElementById('video-hint');
+var wrap = document.querySelector('.video-hero-wrap');
+
+if (video && wrap) {
   video.pause();
   video.preload = 'auto';
-  video.style.transform = 'translateZ(0)';
-  video.style.willChange = 'transform';
 
-  function updateVideo() {
-    var rect = wrap.getBoundingClientRect();
-    var wrapHeight = wrap.offsetHeight;
-    var viewH = window.innerHeight;
-    var scrollStart = -rect.top;
-    var scrollRange = wrapHeight - viewH;
-    var progress = Math.max(0, Math.min(1, scrollStart / scrollRange));
-
-    if (video.readyState >= 2 && video.duration) {
-      var target = progress * video.duration;
-      // Only seek if difference > 0.05s to reduce expensive seeks
-      if (Math.abs(target - lastTime) > 0.06) {
-        video.currentTime = target;
-        lastTime = target;
+  // Pin the video container and scrub video timeline
+  ScrollTrigger.create({
+    trigger: wrap,
+    start: 'top top',
+    end: 'bottom bottom',
+    pin: '.video-hero-sticky',
+    scrub: 1.5,
+    onUpdate: function(self) {
+      if (video.readyState >= 2 && video.duration) {
+        video.currentTime = self.progress * video.duration;
       }
+      if (hint) hint.style.opacity = self.progress > 0.02 ? '0' : '1';
     }
+  });
 
-    if (hint) hint.style.opacity = progress > 0.02 ? '0' : '1';
-    ticking = false;
-  }
-
-  window.addEventListener('scroll', function() {
-    if (!ticking) { requestAnimationFrame(updateVideo); ticking = true; }
-  }, { passive: true });
-
-  video.addEventListener('loadedmetadata', updateVideo);
-  updateVideo();
-})();
+  // Preload video metadata
+  video.addEventListener('loadedmetadata', function() {
+    ScrollTrigger.refresh();
+  });
+}
 
 // ===== Smooth Scroll =====
 document.querySelectorAll('a[href^="#"]').forEach(a => {
