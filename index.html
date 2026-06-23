@@ -66,7 +66,7 @@
   .nav .nav-brand { font-family:'Space Grotesk',sans-serif; font-size:16px; font-weight:700; letter-spacing:4px; color:var(--text); }
 
   /* ===== Scroll-Controlled Video Hero ===== */
-  .video-hero-wrap { position:relative; height:350vh; }
+  .video-hero-wrap { position:relative; height:280vh; }
   .video-hero-sticky { position:sticky; top:0; height:100dvh; overflow:hidden; }
   .video-hero-sticky video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
   .video-hero-overlay {
@@ -85,7 +85,7 @@
     transition:opacity 0.5s;
   }
   @media (max-width:768px) {
-    .video-hero-wrap { height:250vh; }
+    .video-hero-wrap { height:200vh; }
     .video-hero-text { bottom:40px; left:24px; right:24px; }
     .video-hero-text h1 { font-size:clamp(28px,8vw,44px); }
   }
@@ -501,7 +501,7 @@ const cineObserver = new IntersectionObserver(entries => {
 }, { threshold:0.7 });
 document.querySelectorAll('.cine-reveal').forEach(el => cineObserver.observe(el));
 
-// ===== Scroll-Controlled Video =====
+// ===== Scroll-Controlled Video (Optimized) =====
 (function(){
   var wrap = document.querySelector('.video-hero-wrap');
   var video = document.getElementById('hero-video');
@@ -509,25 +509,30 @@ document.querySelectorAll('.cine-reveal').forEach(el => cineObserver.observe(el)
   if (!wrap || !video) return;
 
   var ticking = false;
+  var lastTime = -1;
   video.pause();
+  video.preload = 'auto';
+  video.style.transform = 'translateZ(0)';
+  video.style.willChange = 'transform';
 
   function updateVideo() {
     var rect = wrap.getBoundingClientRect();
     var wrapHeight = wrap.offsetHeight;
     var viewH = window.innerHeight;
-    // How far into the wrap are we: 0 (top) to 1 (bottom past viewport)
     var scrollStart = -rect.top;
     var scrollRange = wrapHeight - viewH;
     var progress = Math.max(0, Math.min(1, scrollStart / scrollRange));
 
-    if (video.readyState >= 2) {
-      video.currentTime = progress * video.duration;
+    if (video.readyState >= 2 && video.duration) {
+      var target = progress * video.duration;
+      // Only seek if difference > 0.05s to reduce expensive seeks
+      if (Math.abs(target - lastTime) > 0.06) {
+        video.currentTime = target;
+        lastTime = target;
+      }
     }
 
-    // Hide hint after scrolling starts
-    if (hint && progress > 0.02) hint.style.opacity = '0';
-    else if (hint) hint.style.opacity = '1';
-
+    if (hint) hint.style.opacity = progress > 0.02 ? '0' : '1';
     ticking = false;
   }
 
@@ -535,7 +540,6 @@ document.querySelectorAll('.cine-reveal').forEach(el => cineObserver.observe(el)
     if (!ticking) { requestAnimationFrame(updateVideo); ticking = true; }
   }, { passive: true });
 
-  // Ensure video is loaded
   video.addEventListener('loadedmetadata', updateVideo);
   updateVideo();
 })();
