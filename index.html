@@ -4,9 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AFLO — Deliver Mobility, Not Vehicles.</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 <style>
   :root {
     --bg: #F2F2F4; --text: #0F1012; --accent: #E96A22;
@@ -503,44 +500,26 @@ const cineObserver = new IntersectionObserver(entries => {
 }, { threshold:0.7 });
 document.querySelectorAll('.cine-reveal').forEach(el => cineObserver.observe(el));
 
-// ===== Lenis Smooth Scroll =====
-var lenis = new Lenis({ duration:1.2, easing:function(t){ return Math.min(1, 1.001 - Math.pow(2, -10 * t)); }, smoothWheel:true });
-function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
-requestAnimationFrame(raf);
 
-// ===== GSAP ScrollTrigger Video Scrubbing =====
-gsap.registerPlugin(ScrollTrigger);
-
+// ===== Native Scroll Video Sync (no overhead) =====
 var video = document.getElementById('hero-video');
 var hint = document.getElementById('video-hint');
 var wrap = document.querySelector('.video-hero-wrap');
-
 if (video && wrap) {
   video.pause();
-  // Pin only — smooth video sync via rAF
-  var st = ScrollTrigger.create({
-    trigger: wrap,
-    start: 'top top',
-    end: 'bottom bottom',
-    pin: '.video-hero-sticky',
-    scrub: true
-  });
-  var lastTime = -1;
-  function syncVideo() {
-    if (video.readyState >= 2 && video.duration) {
-      var target = st.progress * video.duration;
-      if (Math.abs(target - lastTime) > 0.1) {
-        video.currentTime = target;
-        lastTime = target;
-      }
-    }
-    if (hint && st.progress > 0.02) hint.style.opacity = '0';
-    requestAnimationFrame(syncVideo);
+  var lastTime = -1, ticking = false;
+  function sync() {
+    ticking = false;
+    if (video.readyState < 2 || !video.duration) return;
+    var p = Math.max(0, Math.min(1, -wrap.getBoundingClientRect().top / (wrap.offsetHeight - innerHeight)));
+    var t = p * video.duration;
+    if (Math.abs(t - lastTime) > 0.12) { video.currentTime = t; lastTime = t; }
+    if (hint) hint.style.opacity = p > 0.02 ? '0' : '1';
   }
-  video.addEventListener('loadedmetadata', function() { ScrollTrigger.refresh(); syncVideo(); });
-  syncVideo();
+  window.addEventListener('scroll', function() { if (!ticking) { requestAnimationFrame(sync); ticking = true; } }, { passive: true });
+  video.addEventListener('loadedmetadata', sync);
+  sync();
 }
-
 // ===== Smooth Scroll =====
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
