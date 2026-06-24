@@ -551,14 +551,15 @@ if (video && wrap) {
     }
   });
 
-  // Hide loading state when video can play
+  // Hide loading + poster when video can play
   var loading = document.getElementById('video-loading');
   video.addEventListener('loadedmetadata', function() {
     if (loading) loading.classList.add('hidden');
+    var poster = document.querySelector('.video-poster');
+    if (poster) poster.style.opacity = '0';
     ScrollTrigger.refresh();
   });
-  // Fallback: hide after 8 seconds even if still loading
-  setTimeout(function() { if (loading) loading.classList.add('hidden'); }, 4000);
+  setTimeout(function() { if (loading) loading.classList.add('hidden'); var p=document.querySelector('.video-poster'); if(p)p.style.opacity='0'; }, 5000);
 }
 
 // ===== Smooth Scroll =====
