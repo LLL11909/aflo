@@ -147,27 +147,36 @@ if (window.location.protocol === 'file:') { window._isFileProtocol = true; }
   .feature-card h3 { font-family:'Space Grotesk',sans-serif; font-size:20px; font-weight:700; margin-bottom:8px; }
 
   /* ====== NETWORK ====== */
-  /* Network Topology */
-  .network-grid { display:grid; grid-template-columns:0.4fr 0.6fr; gap:80px; align-items:center; margin-top:48px; }
-  .network-text h3 { font-size:13px; font-weight:600; letter-spacing:4px; color:var(--sunset); text-transform:uppercase; margin-bottom:12px; }
-  .network-text h2 { font-family:'Space Grotesk',sans-serif; font-size:clamp(26px,4vw,40px); font-weight:700; line-height:1.15; margin-bottom:16px; }
-  .network-text p.body { font-size:15px; color:var(--text-secondary); line-height:2; margin-bottom:24px; }
-  .network-text .nw-btn { display:inline-block; padding:10px 24px; border-radius:24px; border:1.5px solid var(--sunset); color:var(--sunset); font-size:13px; font-weight:600; letter-spacing:1px; text-decoration:none; transition:all 0.3s; }
-  .network-text .nw-btn:hover { background:var(--sunset); color:#fff; }
-  .network-vis { position:relative; }
-  .network-vis svg { width:100%; height:auto; display:block; }
-  .nw-node { cursor:default; }
-  .nw-node circle.ring { fill:none; stroke:var(--border); stroke-width:1; }
-  .nw-node circle.dot { fill:var(--sunset); }
-  .nw-node text { font-family:'Space Grotesk','PingFang SC',sans-serif; font-size:13px; font-weight:600; fill:var(--earth); letter-spacing:1px; }
-  .nw-line { stroke:#D9C8B7; stroke-width:1.2; fill:none; stroke-dasharray:200; stroke-dashoffset:200; transition:stroke-dashoffset 2s ease-out; }
-  .nw-line.animate { stroke-dashoffset:0; }
-  .nw-particle { fill:var(--sunset); opacity:0.6; animation:nwPulse 2.5s ease-in-out infinite; }
-  .nw-node circle.glow { fill:none; stroke:var(--sunset); stroke-width:2; opacity:0; transition:opacity 0.6s; }
-  .nw-node:hover circle.glow { opacity:0.3; }
-  @keyframes nwPulse { 0%,100%{opacity:0.2} 50%{opacity:0.8} }
-  @media (max-width:768px) { .network-grid { grid-template-columns:1fr; gap:40px; } }
-  .network-arrow { font-size:20px; color:var(--sahara); }
+  .network-section { padding:160px 48px; min-height:900px; display:flex; align-items:center; }
+  .network-wrap { max-width:1400px; margin:0 auto; width:100%; display:grid; grid-template-columns:0.38fr 0.62fr; gap:96px; align-items:center; }
+  .nw-left h3 { font-size:11px; font-weight:700; letter-spacing:6px; color:var(--sunset); text-transform:uppercase; margin-bottom:20px; }
+  .nw-left h2 { font-family:'Space Grotesk',sans-serif; font-size:clamp(28px,4.5vw,46px); font-weight:700; line-height:1.12; margin-bottom:20px; color:var(--earth); }
+  .nw-left h2 em { font-style:normal; color:var(--sunset); }
+  .nw-left .nw-body { font-size:15px; color:var(--text-secondary); line-height:2.1; margin-bottom:28px; }
+  .nw-left .nw-cta { display:inline-block; padding:12px 28px; border-radius:26px; border:1.5px solid var(--sunset); color:var(--sunset); font-size:13px; font-weight:600; letter-spacing:1.5px; text-decoration:none; transition:all 0.35s; }
+  .nw-left .nw-cta:hover { background:var(--sunset); color:#fff; transform:translateY(-1px); box-shadow:0 8px 24px rgba(233,106,34,0.25); }
+  .nw-visual { position:relative; }
+  .nw-visual svg { width:100%; height:auto; display:block; }
+  .nw-bg-map { fill:none; stroke:#E8DFD2; stroke-width:0.8; opacity:0; transition:opacity 2.5s ease; }
+  .nw-bg-map.visible { opacity:0.5; }
+  .nw-line { stroke:rgba(217,200,183,0.5); stroke-width:1.5; fill:none; stroke-dasharray:400; stroke-dashoffset:400; transition:stroke-dashoffset 2.4s cubic-bezier(0.16,1,0.3,1); }
+  .nw-line.on { stroke-dashoffset:0; }
+  .nw-node-g { opacity:0; transform-origin:var(--ox) var(--oy); transition:opacity 0.5s ease-out; }
+  .nw-node-g.show { opacity:1; }
+  .nw-node-g circle.outer { fill:none; stroke:rgba(217,200,183,0.4); stroke-width:1; }
+  .nw-node-g circle.inner { fill:var(--sunset); }
+  .nw-node-g circle.aura { fill:none; stroke:var(--sunset); stroke-width:1.2; opacity:0; transition:opacity 0.4s; }
+  .nw-node-g:hover circle.aura { opacity:0.35; }
+  .nw-node-g:hover circle.outer { stroke:var(--sunset); }
+  .nw-node-g text { font-family:'Space Grotesk','PingFang SC',sans-serif; font-size:12px; font-weight:600; fill:var(--earth); letter-spacing:1.5px; }
+  .nw-label { font-size:11px; fill:var(--text-tertiary); font-family:'Inter','PingFang SC',sans-serif; opacity:0; transition:opacity 0.4s; }
+  .nw-node-g:hover .nw-label { opacity:1; }
+  .nw-particle { fill:var(--sunset); opacity:0; }
+  .nw-particle.flow { opacity:0.55; }
+  .nw-breath { fill:none; stroke:var(--sunset); stroke-width:1; opacity:0.2; }
+  .nw-breath.pulse { animation:nwBreath 3.5s ease-in-out infinite; }
+  @keyframes nwBreath { 0%,100%{opacity:0.08;r:22} 50%{opacity:0.3;r:28} }
+  @media (max-width:768px) { .network-section { padding:80px 20px; min-height:auto; } .network-wrap { grid-template-columns:1fr; gap:48px; } }
 
   /* ====== IMPACT ====== */
   .impact-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:24px; margin-top:48px; }
@@ -368,66 +377,75 @@ if (window.location.protocol === 'file:') { window._isFileProtocol = true; }
 </section>
 
 <!-- ====== NETWORK ====== -->
-<section class="section" id="network">
-  <div class="network-grid">
-    <div class="network-text">
+<section class="network-section" id="network">
+  <div class="network-wrap">
+    <div class="nw-left">
       <h3>AFLO NETWORK</h3>
-      <h2><span class="cn">一辆车跑不出一个网络。<br><em style="color:var(--sunset);font-style:normal;">一百辆</em>可以。</span></h2>
-      <p class="body"><span class="cn">车在路上跑，电池在站点充电，运营者在后台调度，社区在终点等待。这不是一辆车的故事。这是一个正在运转的网络。</span></p>
-      <a href="#modules" class="nw-btn"><span class="cn">探索网络</span><span class="en">Explore The Network</span></a>
+      <h2><span class="cn">一辆车跑不出一个网络。<br><em>一百辆</em>可以。</span></h2>
+      <p class="nw-body"><span class="cn">车在路上跑，电池在站点充电，运营者在后台调度，社区在终点等待。这不是一辆车的故事。这是一个正在运转的网络。</span></p>
+      <a href="#modules" class="nw-cta"><span class="cn">探索网络</span><span class="en">Explore The Network</span></a>
     </div>
-    <div class="network-vis">
-      <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+    <div class="nw-visual">
+      <svg viewBox="0 0 640 500" xmlns="http://www.w3.org/2000/svg">
+        <!-- African map outline (stylized) -->
+        <path class="nw-bg-map" d="M200,60 C230,45 270,50 310,55 C340,58 360,70 375,85 C390,100 400,115 410,130 C420,145 430,160 435,175 C440,190 442,210 440,230 C438,250 432,270 420,285 C408,300 390,310 370,315 C350,320 330,315 310,310 C290,305 270,305 250,310 C230,315 210,325 195,335 C180,342 165,340 152,330 C138,318 125,300 118,280 C110,258 108,235 112,212 C116,190 125,170 140,152 C155,135 172,120 190,110 C208,100 180,75 200,60Z"/>
+        <!-- African map detail paths -->
+        <path class="nw-bg-map" d="M280,140 C290,135 305,138 315,145 C325,152 330,160 328,170 C326,178 318,180 310,178 C300,175 290,165 285,155Z"/>
+        <path class="nw-bg-map" d="M180,200 C195,190 215,188 230,195 C245,202 250,215 245,225 C238,235 220,238 205,232Z"/>
+        <path class="nw-bg-map" d="M320,240 C335,232 355,233 365,245 C375,257 370,272 358,280 C345,288 328,284 320,272Z"/>
+        <path class="nw-bg-map" d="M240,300 C260,295 285,298 300,310 C315,322 310,340 295,348 C280,355 260,350 248,338Z"/>
+        <path class="nw-bg-map" d="M150,260 C160,252 178,250 190,258 C202,266 200,280 188,286 C176,290 160,285 150,275Z"/>
+        <!-- Madagascar -->
+        <path class="nw-bg-map" d="M430,300 C438,295 445,310 440,330 C435,350 430,360 425,350 C418,338 418,310 430,300Z"/>
+
         <!-- Lines -->
-        <line class="nw-line" id="l-vh" x1="140" y1="200" x2="250" y2="200"/>
-        <line class="nw-line" id="l-hb" x1="250" y1="200" x2="360" y2="140"/>
-        <line class="nw-line" id="l-ho" x1="250" y1="200" x2="360" y2="200"/>
-        <line class="nw-line" id="l-hc" x1="250" y1="200" x2="360" y2="260"/>
-        <!-- Particles on lines -->
-        <circle class="nw-particle" id="p-vh" r="3" cx="195" cy="200"/>
-        <circle class="nw-particle" id="p-hb" r="3" cx="305" cy="170"/>
-        <circle class="nw-particle" id="p-ho" r="3" cx="305" cy="200"/>
-        <circle class="nw-particle" id="p-hc" r="3" cx="305" cy="230"/>
-        <!-- Hub (center) -->
-        <g class="nw-node" id="nd-hub" opacity="0">
-          <circle class="ring" cx="250" cy="200" r="22"/>
-          <circle class="glow" cx="250" cy="200" r="28"/>
-          <circle class="dot" cx="250" cy="200" r="5"/>
-          <text x="250" y="242" text-anchor="middle">Hub</text>
+        <line class="nw-line" id="nl-vh" x1="180" y1="300" x2="340" y2="280"/>
+        <line class="nw-line" id="nl-hb" x1="340" y1="280" x2="370" y2="180"/>
+        <line class="nw-line" id="nl-ho" x1="340" y1="280" x2="460" y2="310"/>
+        <line class="nw-line" id="nl-hc" x1="340" y1="280" x2="480" y2="220"/>
+
+        <!-- Particles -->
+        <circle class="nw-particle" id="pp0" r="2.5" cx="260" cy="290"/>
+        <circle class="nw-particle" id="pp1" r="2.5" cx="355" cy="230"/>
+        <circle class="nw-particle" id="pp2" r="2.5" cx="400" cy="295"/>
+        <circle class="nw-particle" id="pp3" r="2.5" cx="410" cy="250"/>
+
+        <!-- Hub -->
+        <g class="nw-node-g" id="ng-hub" style="--ox:340px;--oy:280px">
+          <circle class="outer" cx="340" cy="280" r="32"/>
+          <circle class="inner" cx="340" cy="280" r="7"/>
+          <circle class="nw-breath pulse" cx="340" cy="280" r="22"/>
+          <text x="340" y="330" text-anchor="middle">Hub</text>
+          <text class="nw-label" x="340" y="346" text-anchor="middle">区域物流中心</text>
         </g>
         <!-- Vehicle -->
-        <g class="nw-node" id="nd-veh" opacity="0">
-          <circle class="ring" cx="120" cy="200" r="20"/>
-          <circle class="glow" cx="120" cy="200" r="26"/>
-          <circle class="dot" cx="120" cy="200" r="4"/>
-          <text x="120" y="240" text-anchor="middle">Vehicle</text>
+        <g class="nw-node-g" id="ng-veh" style="--ox:160px;--oy:300px">
+          <circle class="outer" cx="160" cy="300" r="26"/>
+          <circle class="inner" cx="160" cy="300" r="5.5"/>
+          <text x="160" y="344" text-anchor="middle">Vehicle</text>
+          <text class="nw-label" x="160" y="360" text-anchor="middle">负责末端运输</text>
         </g>
         <!-- Battery -->
-        <g class="nw-node" id="nd-bat" opacity="0">
-          <circle class="ring" cx="380" cy="120" r="20"/>
-          <circle class="glow" cx="380" cy="120" r="26"/>
-          <circle class="dot" cx="380" cy="120" r="4"/>
-          <text x="380" y="160" text-anchor="middle">Battery</text>
+        <g class="nw-node-g" id="ng-bat" style="--ox:390px;--oy:160px">
+          <circle class="outer" cx="390" cy="160" r="26"/>
+          <circle class="inner" cx="390" cy="160" r="5.5"/>
+          <text x="390" y="204" text-anchor="middle">Battery</text>
+          <text class="nw-label" x="390" y="220" text-anchor="middle">提供能源补给</text>
         </g>
         <!-- Operator -->
-        <g class="nw-node" id="nd-opr" opacity="0">
-          <circle class="ring" cx="380" cy="200" r="20"/>
-          <circle class="glow" cx="380" cy="200" r="26"/>
-          <circle class="dot" cx="380" cy="200" r="4"/>
-          <text x="380" y="240" text-anchor="middle">Operator</text>
+        <g class="nw-node-g" id="ng-opr" style="--ox:480px;--oy:310px">
+          <circle class="outer" cx="480" cy="310" r="26"/>
+          <circle class="inner" cx="480" cy="310" r="5.5"/>
+          <text x="480" y="354" text-anchor="middle">Operator</text>
+          <text class="nw-label" x="480" y="370" text-anchor="middle">统一调度管理</text>
         </g>
         <!-- Community -->
-        <g class="nw-node" id="nd-com" opacity="0">
-          <circle class="ring" cx="380" cy="280" r="20"/>
-          <circle class="glow" cx="380" cy="280" r="26"/>
-          <circle class="dot" cx="380" cy="280" r="4"/>
-          <text x="380" y="320" text-anchor="middle">Community</text>
+        <g class="nw-node-g" id="ng-com" style="--ox:500px;--oy:210px">
+          <circle class="outer" cx="500" cy="210" r="26"/>
+          <circle class="inner" cx="500" cy="210" r="5.5"/>
+          <text x="500" y="254" text-anchor="middle">Community</text>
+          <text class="nw-label" x="500" y="270" text-anchor="middle">服务终端用户</text>
         </g>
-        <!-- Breathing ring on Hub -->
-        <circle cx="250" cy="200" r="22" fill="none" stroke="var(--sunset)" stroke-width="1" opacity="0.3">
-          <animate attributeName="r" values="22;26;22" dur="3s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values="0.3;0.05;0.3" dur="3s" repeatCount="indefinite"/>
-        </circle>
       </svg>
     </div>
   </div>
@@ -673,46 +691,55 @@ if (window._isFileProtocol) {
   var mf = document.getElementById('main-fallback'); if (mf) mf.style.display = 'block';
   console.log('📁 file:// mode — using static images');
 }
-// ===== Network Topology Animation =====
+// ===== Network Animation =====
 (function(){
   var section = document.getElementById('network');
   if (!section) return;
-  var nodes = ['nd-hub','nd-veh','nd-bat','nd-opr','nd-com'];
-  var lines = ['l-vh','l-hb','l-ho','l-hc'];
-  var animated = false;
+  var mapEl = document.querySelector('.nw-bg-map');
+  var nodes = ['ng-hub','ng-veh','ng-bat','ng-opr','ng-com'];
+  var lines = ['nl-vh','nl-hb','nl-ho','nl-hc'];
+  var started = false;
+
   new IntersectionObserver(function(entries) {
     entries.forEach(function(e) {
-      if (e.isIntersecting && !animated) {
-        animated = true;
+      if (e.isIntersecting && !started) {
+        started = true;
+        // Map fade in
+        setTimeout(function() { if (mapEl) mapEl.classList.add('visible'); }, 200);
+        // Nodes appear sequentially
         nodes.forEach(function(id, i) {
           setTimeout(function() {
             var el = document.getElementById(id);
-            if (el) { el.style.opacity = '1'; el.style.transition = 'opacity 0.6s ease-out'; }
-          }, 300 + i * 180);
+            if (el) el.classList.add('show');
+          }, 400 + i * 180);
         });
+        // Lines draw after nodes
         setTimeout(function() {
           lines.forEach(function(id) {
             var el = document.getElementById(id);
-            if (el) el.classList.add('animate');
+            if (el) el.classList.add('on');
           });
-        }, 300 + nodes.length * 180);
+          // Particles start flowing
+          document.querySelectorAll('.nw-particle').forEach(function(p) { p.classList.add('flow'); });
+        }, 400 + nodes.length * 180);
       }
     });
-  }, { threshold: 0.4 }).observe(section);
-  // Particle flow
-  var pts = {
-    'p-vh':{a:120,b:200,c:250,d:200},
-    'p-hb':{a:250,b:200,c:380,d:120},
-    'p-ho':{a:250,b:200,c:380,d:200},
-    'p-hc':{a:250,b:200,c:380,d:280}
-  };
+  }, { threshold: 0.35 }).observe(section);
+
+  // Particle flow along lines
+  var paths = [
+    { id:'pp0', a:160,b:300,c:340,d:280 },
+    { id:'pp1', a:340,b:280,c:390,d:160 },
+    { id:'pp2', a:340,b:280,c:480,d:310 },
+    { id:'pp3', a:340,b:280,c:500,d:210 }
+  ];
   var ph = 0;
   setInterval(function() {
-    ph += 0.018;
-    Object.keys(pts).forEach(function(id, i) {
-      var p = pts[id], el = document.getElementById(id);
-      if (!el) return;
-      var t = (Math.sin(ph + i * 0.8) + 1) / 2;
+    ph += 0.016;
+    paths.forEach(function(p, i) {
+      var el = document.getElementById(p.id);
+      if (!el || !el.classList.contains('flow')) return;
+      var t = (Math.sin(ph + i * 0.9) + 1) / 2;
       el.setAttribute('cx', p.a + (p.c - p.a) * t);
       el.setAttribute('cy', p.b + (p.d - p.b) * t);
     });
