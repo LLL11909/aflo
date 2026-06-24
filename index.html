@@ -517,21 +517,28 @@ var wrap = document.querySelector('.video-hero-wrap');
 
 if (video && wrap) {
   video.pause();
-  // Pin and scrub video
-  ScrollTrigger.create({
+  // Pin only — smooth video sync via rAF
+  var st = ScrollTrigger.create({
     trigger: wrap,
     start: 'top top',
     end: 'bottom bottom',
     pin: '.video-hero-sticky',
-    scrub: 2,
-    onUpdate: function(self) {
-      if (video.readyState >= 2 && video.duration) {
-        video.currentTime = self.progress * video.duration;
-      }
-      if (hint) hint.style.opacity = self.progress > 0.02 ? '0' : '1';
-    }
+    scrub: true
   });
-  video.addEventListener('loadedmetadata', function() { ScrollTrigger.refresh(); });
+  var lastTime = -1;
+  function syncVideo() {
+    if (video.readyState >= 2 && video.duration) {
+      var target = st.progress * video.duration;
+      if (Math.abs(target - lastTime) > 0.1) {
+        video.currentTime = target;
+        lastTime = target;
+      }
+    }
+    if (hint && st.progress > 0.02) hint.style.opacity = '0';
+    requestAnimationFrame(syncVideo);
+  }
+  video.addEventListener('loadedmetadata', function() { ScrollTrigger.refresh(); syncVideo(); });
+  syncVideo();
 }
 
 // ===== Smooth Scroll =====
