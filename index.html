@@ -501,25 +501,26 @@ const cineObserver = new IntersectionObserver(entries => {
 document.querySelectorAll('.cine-reveal').forEach(el => cineObserver.observe(el));
 
 
-// ===== Native Scroll Video Sync (no overhead) =====
-var video = document.getElementById('hero-video');
-var hint = document.getElementById('video-hint');
-var wrap = document.querySelector('.video-hero-wrap');
-if (video && wrap) {
+// ===== Video Scrub =====
+(function(){
+  var video = document.getElementById('hero-video');
+  var hint = document.getElementById('video-hint');
+  var wrap = document.querySelector('.video-hero-wrap');
+  if (!video || !wrap) return;
   video.pause();
-  var lastTime = -1, ticking = false;
-  function sync() {
-    ticking = false;
-    if (video.readyState < 2 || !video.duration) return;
-    var p = Math.max(0, Math.min(1, -wrap.getBoundingClientRect().top / (wrap.offsetHeight - innerHeight)));
-    var t = p * video.duration;
-    if (Math.abs(t - lastTime) > 0.12) { video.currentTime = t; lastTime = t; }
-    if (hint) hint.style.opacity = p > 0.02 ? '0' : '1';
+  var last = -1;
+  function tick() {
+    if (video.readyState >= 1 && video.duration) {
+      var p = Math.max(0, Math.min(1, -wrap.getBoundingClientRect().top / (wrap.offsetHeight - innerHeight)));
+      var t = p * video.duration;
+      if (Math.abs(t - last) > 0.15) { video.currentTime = t; last = t; }
+      if (hint) hint.style.opacity = p > 0.01 ? '0' : '1';
+    }
+    requestAnimationFrame(tick);
   }
-  window.addEventListener('scroll', function() { if (!ticking) { requestAnimationFrame(sync); ticking = true; } }, { passive: true });
-  video.addEventListener('loadedmetadata', sync);
-  sync();
-}
+  video.addEventListener('loadedmetadata', function() { video.currentTime = 0; });
+  tick();
+})();
 // ===== Smooth Scroll =====
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
