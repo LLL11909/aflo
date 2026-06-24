@@ -155,13 +155,28 @@ if (window.location.protocol === 'file:') { window._isFileProtocol = true; }
   .nw-left .nw-body { font-size:15px; color:var(--text-secondary); line-height:2.1; margin-bottom:28px; }
   .nw-left .nw-cta { display:inline-block; padding:12px 28px; border-radius:26px; border:1.5px solid var(--sunset); color:var(--sunset); font-size:13px; font-weight:600; letter-spacing:1.5px; text-decoration:none; transition:all 0.35s; }
   .nw-left .nw-cta:hover { background:var(--sunset); color:#fff; transform:translateY(-1px); box-shadow:0 8px 24px rgba(233,106,34,0.25); }
-  .nw-visual { position:relative; }
-  .nw-visual svg { width:100%; height:auto; display:block; }
-  .africa-map path { fill:none; stroke:#E8DFD2; stroke-width:1.2; opacity:0.35; }
-  .nw-layer { opacity:0; transition:opacity 1s ease-out; }
-  .nw-layer.show { opacity:1; }
-  .nw-dot { cursor:default; }
-  .nw-dot:hover { opacity:1; }
+
+  /* Dashboard Cards */
+  .nw-dashboard { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:32px; }
+  .nw-card { background:rgba(255,255,255,0.45); border:1px solid rgba(58,46,36,0.08); border-radius:24px; padding:28px 24px; transition:all 0.4s; opacity:0; transform:translateY(20px); }
+  .nw-card.show { opacity:1; transform:translateY(0); }
+  .nw-card:hover { border-color:rgba(233,106,34,0.3); box-shadow:0 8px 30px rgba(58,46,36,0.06); }
+  .nw-card .label { font-size:11px; font-weight:600; letter-spacing:3px; color:var(--text-tertiary); text-transform:uppercase; margin-bottom:8px; }
+  .nw-card .num { font-family:'Space Grotesk',sans-serif; font-size:clamp(36px,4vw,52px); font-weight:700; color:var(--sunset); line-height:1; }
+  .nw-card .num .unit { font-size:16px; font-weight:500; color:var(--text-tertiary); margin-left:2px; }
+  .nw-card .sub { font-size:12px; color:var(--text-secondary); margin-top:4px; }
+
+  /* Activity Flow */
+  .nw-activity { background:rgba(255,255,255,0.35); border:1px solid rgba(58,46,36,0.06); border-radius:24px; padding:28px 32px; opacity:0; transition:opacity 0.8s; }
+  .nw-activity.show { opacity:1; }
+  .nw-flow { display:flex; align-items:center; gap:0; }
+  .nw-flow-node { flex:1; text-align:center; }
+  .nw-flow-node .dot { width:10px; height:10px; background:var(--sunset); border-radius:50%; margin:0 auto 8px; }
+  .nw-flow-node .name { font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:700; color:var(--earth); letter-spacing:1px; }
+  .nw-flow-node .detail { font-size:10px; color:var(--text-tertiary); margin-top:2px; }
+  .nw-flow-connector { width:60px; height:1px; background:#D9C8B7; flex-shrink:0; position:relative; margin-top:-16px; }
+  .nw-flow-connector::after { content:''; position:absolute; top:-2px; width:4px; height:4px; background:var(--sunset); border-radius:50%; animation:nwFlow 2.5s ease-in-out infinite; }
+  @keyframes nwFlow { 0%{left:0%;opacity:0.3} 50%{opacity:1} 100%{left:calc(100% - 4px);opacity:0.3} }
   @media (max-width:768px) { .network-section { padding:80px 20px; min-height:auto; } .network-wrap { grid-template-columns:1fr; gap:48px; } }
 
   /* ====== IMPACT ====== */
@@ -372,68 +387,23 @@ if (window.location.protocol === 'file:') { window._isFileProtocol = true; }
       <span class="nw-cta"><span class="cn">探索网络</span><span class="en">Explore The Network</span></span>
     </div>
     <div class="nw-visual">
-      <svg viewBox="0 0 700 540" xmlns="http://www.w3.org/2000/svg">
-        <!-- African Map -->
-        <g class="africa-map">
-          <path d="M190,55 C220,40 260,42 300,48 C340,52 365,62 385,78 C405,94 420,112 430,130 C440,148 445,168 444,190 C443,212 436,235 422,255 C408,272 388,285 368,290 C348,295 325,290 305,285 C285,280 262,280 242,288 C222,296 202,308 186,320 C170,330 155,328 142,318 C128,306 115,290 108,270 C100,248 98,222 104,200 C110,178 120,160 135,145 C150,130 168,120 185,108 C200,98 175,72 190,55Z"/>
-          <path d="M280,130 C295,122 315,125 328,135 C341,145 348,158 344,170 C340,180 328,182 318,178 C306,172 292,158 285,145Z"/>
-          <path d="M170,195 C188,182 210,180 228,188 C246,196 254,212 248,225 C240,238 220,243 202,236Z"/>
-          <path d="M320,230 C338,218 362,222 374,238 C386,254 382,272 368,282 C354,292 334,286 324,270Z"/>
-          <path d="M235,295 C258,288 286,292 304,308 C322,322 318,344 300,352 C282,360 258,354 245,340Z"/>
-          <path d="M145,252 C158,242 178,240 192,250 C206,260 204,278 190,285 C176,292 158,284 148,272Z"/>
-          <path d="M445,300 C455,293 462,312 455,335 C448,358 442,370 435,358 C426,345 426,315 445,300Z"/>
-        </g>
-
-        <!-- Route paths -->
-        <g class="nw-routes" opacity="0.4">
-          <line x1="200" y1="285" x2="340" y2="270" stroke="#D9C8B7" stroke-width="0.8"/>
-          <line x1="340" y1="270" x2="420" y2="185" stroke="#D9C8B7" stroke-width="0.8"/>
-          <line x1="340" y1="270" x2="320" y2="340" stroke="#D9C8B7" stroke-width="0.8"/>
-          <line x1="340" y1="270" x2="460" y2="305" stroke="#D9C8B7" stroke-width="0.8"/>
-          <line x1="420" y1="185" x2="480" y2="240" stroke="#D9C8B7" stroke-width="0.8"/>
-          <line x1="320" y1="340" x2="200" y2="285" stroke="#D9C8B7" stroke-width="0.8"/>
-          <line x1="340" y1="270" x2="260" y2="225" stroke="#D9C8B7" stroke-width="0.8"/>
-          <line x1="260" y1="225" x2="140" y2="260" stroke="#D9C8B7" stroke-width="0.8"/>
-        </g>
-
-        <!-- Vehicle Fleet nodes -->
-        <g class="nw-layer" id="nw-vehicles">
-          <g class="nw-dot"><circle cx="200" cy="285" r="4" fill="#F26A21"/><circle cx="200" cy="285" r="8" fill="none" stroke="#F26A21" stroke-width="0.6" opacity="0.4"/><text x="200" y="275" text-anchor="middle" font-size="9" fill="#3A2E24" font-family="Space Grotesk,'PingFang SC',sans-serif" font-weight="600">Vehicle</text></g>
-          <g class="nw-dot"><circle cx="380" cy="235" r="3.5" fill="#F26A21"/><circle cx="380" cy="235" r="7" fill="none" stroke="#F26A21" stroke-width="0.6" opacity="0.4"/></g>
-          <g class="nw-dot"><circle cx="430" cy="170" r="3.5" fill="#F26A21"/><circle cx="430" cy="170" r="7" fill="none" stroke="#F26A21" stroke-width="0.6" opacity="0.4"/></g>
-          <g class="nw-dot"><circle cx="310" cy="330" r="3" fill="#F26A21"/><circle cx="310" cy="330" r="6" fill="none" stroke="#F26A21" stroke-width="0.6" opacity="0.4"/></g>
-          <g class="nw-dot"><circle cx="155" cy="260" r="3" fill="#F26A21"/><circle cx="155" cy="260" r="6" fill="none" stroke="#F26A21" stroke-width="0.6" opacity="0.4"/></g>
-        </g>
-
-        <!-- Battery Stations -->
-        <g class="nw-layer" id="nw-batteries">
-          <g class="nw-dot"><circle cx="255" cy="223" r="5" fill="#E9A23B"/><circle cx="255" cy="223" r="10" fill="none" stroke="#E9A23B" stroke-width="0.6" opacity="0.3"/><text x="255" y="210" text-anchor="middle" font-size="9" fill="#3A2E24" font-family="Space Grotesk,'PingFang SC',sans-serif" font-weight="600">Battery</text></g>
-          <g class="nw-dot"><circle cx="370" cy="290" r="4" fill="#E9A23B"/><circle cx="370" cy="290" r="8" fill="none" stroke="#E9A23B" stroke-width="0.6" opacity="0.3"/></g>
-          <g class="nw-dot"><circle cx="195" cy="305" r="3.5" fill="#E9A23B"/><circle cx="195" cy="305" r="7" fill="none" stroke="#E9A23B" stroke-width="0.6" opacity="0.3"/></g>
-        </g>
-
-        <!-- Regional Hubs -->
-        <g class="nw-layer" id="nw-hubs">
-          <g class="nw-dot"><circle cx="338" cy="270" r="8" fill="#F26A21"/><circle cx="338" cy="270" r="16" fill="none" stroke="#F26A21" stroke-width="1.2" opacity="0.3"/><circle cx="338" cy="270" r="22" fill="none" stroke="#F26A21" stroke-width="0.5" opacity="0.15"><animate attributeName="r" values="16;22;16" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.3;0.05;0.3" dur="3s" repeatCount="indefinite"/></circle><text x="338" y="258" text-anchor="middle" font-size="10" fill="#3A2E24" font-family="Space Grotesk,'PingFang SC',sans-serif" font-weight="700">Hub</text></g>
-          <g class="nw-dot"><circle cx="285" cy="250" r="5" fill="#F26A21"/><circle cx="285" cy="250" r="12" fill="none" stroke="#F26A21" stroke-width="0.8" opacity="0.25"/></g>
-          <g class="nw-dot"><circle cx="385" cy="300" r="5" fill="#F26A21"/><circle cx="385" cy="300" r="12" fill="none" stroke="#F26A21" stroke-width="0.8" opacity="0.25"/></g>
-        </g>
-
-        <!-- Operator Centers -->
-        <g class="nw-layer" id="nw-operators">
-          <g class="nw-dot"><circle cx="460" cy="305" r="5" fill="#D98C5F"/><circle cx="460" cy="305" r="10" fill="none" stroke="#D98C5F" stroke-width="0.6" opacity="0.3"/><text x="460" y="295" text-anchor="middle" font-size="9" fill="#3A2E24" font-family="Space Grotesk,'PingFang SC',sans-serif" font-weight="600">Operator</text></g>
-          <g class="nw-dot"><circle cx="285" cy="230" r="4" fill="#D98C5F"/><circle cx="285" cy="230" r="8" fill="none" stroke="#D98C5F" stroke-width="0.6" opacity="0.3"/></g>
-        </g>
-
-        <!-- Communities -->
-        <g class="nw-layer" id="nw-communities">
-          <g class="nw-dot"><circle cx="480" cy="240" r="4.5" fill="#E07B5A"/><circle cx="480" cy="240" r="9" fill="none" stroke="#E07B5A" stroke-width="0.6" opacity="0.25"/><text x="480" y="228" text-anchor="middle" font-size="9" fill="#3A2E24" font-family="Space Grotesk,'PingFang SC',sans-serif" font-weight="600">Community</text></g>
-          <g class="nw-dot"><circle cx="175" cy="318" r="3.5" fill="#E07B5A"/><circle cx="175" cy="318" r="7" fill="none" stroke="#E07B5A" stroke-width="0.6" opacity="0.25"/></g>
-          <g class="nw-dot"><circle cx="390" cy="345" r="3.5" fill="#E07B5A"/><circle cx="390" cy="345" r="7" fill="none" stroke="#E07B5A" stroke-width="0.6" opacity="0.25"/></g>
-          <g class="nw-dot"><circle cx="310" cy="170" r="3" fill="#E07B5A"/><circle cx="310" cy="170" r="6" fill="none" stroke="#E07B5A" stroke-width="0.6" opacity="0.25"/></g>
-          <g class="nw-dot"><circle cx="220" cy="345" r="3" fill="#E07B5A"/><circle cx="220" cy="345" r="6" fill="none" stroke="#E07B5A" stroke-width="0.6" opacity="0.25"/></g>
-        </g>
-      </svg>
+      <div class="nw-dashboard">
+        <div class="nw-card" id="card-veh"><div class="label">Vehicles</div><div class="num">120<span class="unit">+</span></div><div class="sub">Active across 8 countries</div></div>
+        <div class="nw-card" id="card-bat"><div class="label">Battery Stations</div><div class="num">45</div><div class="sub">Solar-compatible grid</div></div>
+        <div class="nw-card" id="card-hub"><div class="label">Regional Hubs</div><div class="num">12</div><div class="sub">Strategic city coverage</div></div>
+        <div class="nw-card" id="card-com"><div class="label">Communities Served</div><div class="num">300<span class="unit">K+</span></div><div class="sub">Growing every month</div></div>
+      </div>
+      <div class="nw-activity" id="nw-activity">
+        <div class="nw-flow">
+          <div class="nw-flow-node"><div class="dot"></div><div class="name">Vehicles</div><div class="detail">120+ Fleet</div></div>
+          <div class="nw-flow-connector"></div>
+          <div class="nw-flow-node"><div class="dot"></div><div class="name">Battery</div><div class="detail">45 Stations</div></div>
+          <div class="nw-flow-connector"></div>
+          <div class="nw-flow-node"><div class="dot"></div><div class="name">Hubs</div><div class="detail">12 Regional</div></div>
+          <div class="nw-flow-connector"></div>
+          <div class="nw-flow-node"><div class="dot"></div><div class="name">Communities</div><div class="detail">300K+ Served</div></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -678,23 +648,29 @@ if (window._isFileProtocol) {
   var mf = document.getElementById('main-fallback'); if (mf) mf.style.display = 'block';
   console.log('📁 file:// mode — using static images');
 }
-// ===== Network Sequential Build =====
+// ===== Network Dashboard Animation =====
 (function(){
   var section = document.getElementById('network');
   if (!section) return;
-  var layers = ['nw-vehicles','nw-batteries','nw-hubs','nw-operators','nw-communities'];
+  var cards = ['card-veh','card-bat','card-hub','card-com'];
   var started = false;
 
   new IntersectionObserver(function(entries) {
     entries.forEach(function(e) {
       if (e.isIntersecting && !started) {
         started = true;
-        layers.forEach(function(id, i) {
+        // Cards fade in sequentially
+        cards.forEach(function(id, i) {
           setTimeout(function() {
             var el = document.getElementById(id);
             if (el) el.classList.add('show');
-          }, 300 + i * 350);
+          }, 200 + i * 180);
         });
+        // Activity flow appears after cards
+        setTimeout(function() {
+          var act = document.getElementById('nw-activity');
+          if (act) act.classList.add('show');
+        }, 200 + cards.length * 180 + 300);
       }
     });
   }, { threshold: 0.3 }).observe(section);
