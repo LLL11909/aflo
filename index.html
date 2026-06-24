@@ -68,21 +68,9 @@
   .nav .nav-brand { font-family:'Space Grotesk',sans-serif; font-size:16px; font-weight:700; letter-spacing:4px; color:var(--text); }
 
   /* ===== Scroll-Controlled Video Hero ===== */
-  .video-hero-wrap { position:relative; height:400vh; }
+  .video-hero-wrap { position:relative; height:300vh; }
   .video-hero-sticky { position:sticky; top:0; height:100dvh; overflow:hidden; background:#000; }
-  .video-hero-sticky .video-poster { z-index:0; }
-  .video-hero-sticky .video-poster,.video-hero-sticky video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:opacity 0.8s; }
-  .video-hero-loading {
-    position:absolute; inset:0; z-index:5; display:flex; flex-direction:column; align-items:center; justify-content:center;
-    background:#0A0A0A; transition:opacity 0.6s; pointer-events:none;
-  }
-  .video-hero-loading.hidden { opacity:0; }
-  .video-hero-loading .spinner {
-    width:40px; height:40px; border:2px solid rgba(255,255,255,0.1); border-top-color:var(--accent);
-    border-radius:50%; animation:spin 1s linear infinite; margin-bottom:16px;
-  }
-  .video-hero-loading p { color:rgba(255,255,255,0.4); font-size:13px; letter-spacing:2px; }
-  @keyframes spin { to { transform:rotate(360deg); } }
+  .video-hero-sticky video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
   .video-hero-overlay {
     position:absolute; inset:0; z-index:1; pointer-events:none;
     background:linear-gradient(0deg, rgba(242,242,244,0.6) 0%, transparent 30%, transparent 70%, rgba(242,242,244,0.4) 100%);
@@ -261,14 +249,9 @@
 <!-- ===== SCROLL-CONTROLLED VIDEO HERO ===== -->
 <section class="video-hero-wrap" id="hero">
   <div class="video-hero-sticky">
-    <video id="hero-video" muted playsinline preload="metadata">
+    <video id="hero-video" muted playsinline preload="auto" loop>
       <source src="video.mp4" type="video/mp4">
     </video>
-    <img class="video-poster" src="image/base.png" alt="">
-    <div class="video-hero-loading" id="video-loading">
-      <div class="spinner"></div>
-      <p>Loading</p>
-    </div>
     <div class="video-hero-overlay"></div>
     <div class="video-hero-text">
       <h1>Deliver Mobility.<br>Not Vehicles.</h1>
@@ -534,32 +517,21 @@ var wrap = document.querySelector('.video-hero-wrap');
 
 if (video && wrap) {
   video.pause();
-  video.preload = 'metadata';
-
-  // Pin the video container and scrub video timeline
+  // Pin and scrub video
   ScrollTrigger.create({
     trigger: wrap,
     start: 'top top',
     end: 'bottom bottom',
     pin: '.video-hero-sticky',
-    scrub: 1.5,
+    scrub: 1.2,
     onUpdate: function(self) {
-      if (video.readyState >= 2 && video.duration) {
+      if (video.readyState >= 1 && video.duration) {
         video.currentTime = self.progress * video.duration;
       }
       if (hint) hint.style.opacity = self.progress > 0.02 ? '0' : '1';
     }
   });
-
-  // Hide loading + poster when video can play
-  var loading = document.getElementById('video-loading');
-  video.addEventListener('loadedmetadata', function() {
-    if (loading) loading.classList.add('hidden');
-    var poster = document.querySelector('.video-poster');
-    if (poster) poster.style.opacity = '0';
-    ScrollTrigger.refresh();
-  });
-  setTimeout(function() { if (loading) loading.classList.add('hidden'); var p=document.querySelector('.video-poster'); if(p)p.style.opacity='0'; }, 5000);
+  video.addEventListener('loadedmetadata', function() { ScrollTrigger.refresh(); });
 }
 
 // ===== Smooth Scroll =====
