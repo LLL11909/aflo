@@ -68,9 +68,9 @@
   .nav .nav-brand { font-family:'Space Grotesk',sans-serif; font-size:16px; font-weight:700; letter-spacing:4px; color:var(--text); }
 
   /* ===== Scroll-Controlled Video Hero ===== */
-  .video-hero-wrap { position:relative; height:300vh; }
+  .video-hero-wrap { position:relative; height:250vh; }
   .video-hero-sticky { position:sticky; top:0; height:100dvh; overflow:hidden; background:#000; }
-  .video-hero-sticky video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .video-hero-sticky video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transform:translateZ(0); }
   .video-hero-overlay {
     position:absolute; inset:0; z-index:1; pointer-events:none;
     background:linear-gradient(0deg, rgba(242,242,244,0.6) 0%, transparent 30%, transparent 70%, rgba(242,242,244,0.4) 100%);
@@ -249,7 +249,7 @@
 <!-- ===== SCROLL-CONTROLLED VIDEO HERO ===== -->
 <section class="video-hero-wrap" id="hero">
   <div class="video-hero-sticky">
-    <video id="hero-video" muted playsinline preload="auto" loop>
+    <video id="hero-video" muted playsinline preload="auto">
       <source src="video.mp4" type="video/mp4">
     </video>
     <div class="video-hero-overlay"></div>
@@ -523,9 +523,9 @@ if (video && wrap) {
     start: 'top top',
     end: 'bottom bottom',
     pin: '.video-hero-sticky',
-    scrub: 1.2,
+    scrub: 2,
     onUpdate: function(self) {
-      if (video.readyState >= 1 && video.duration) {
+      if (video.readyState >= 2 && video.duration) {
         video.currentTime = self.progress * video.duration;
       }
       if (hint) hint.style.opacity = self.progress > 0.02 ? '0' : '1';
