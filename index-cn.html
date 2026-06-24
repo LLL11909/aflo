@@ -155,23 +155,13 @@ if (window.location.protocol === 'file:') { window._isFileProtocol = true; }
   .nw-left .nw-body { font-size:15px; color:var(--text-secondary); line-height:2.1; margin-bottom:28px; }
   .nw-left .nw-cta { display:inline-block; padding:12px 28px; border-radius:26px; border:1.5px solid var(--sunset); color:var(--sunset); font-size:13px; font-weight:600; letter-spacing:1.5px; text-decoration:none; transition:all 0.35s; }
   .nw-left .nw-cta:hover { background:var(--sunset); color:#fff; transform:translateY(-1px); box-shadow:0 8px 24px rgba(233,106,34,0.25); }
-  .nw-visual { position:relative; min-height:420px; }
-  .nw-visual svg { width:100%; height:auto; display:block; max-height:520px; }
-  .nw-bg-map { fill:none; stroke:#E8DFD2; stroke-width:1.2; opacity:0.4; }
-  .nw-line { stroke:rgba(217,200,183,0.5); stroke-width:1.5; fill:none; }
-  .nw-node-g { opacity:1; }
-  .nw-node-g circle.outer { fill:none; stroke:rgba(217,200,183,0.4); stroke-width:1.2; }
-  .nw-node-g circle.inner { fill:var(--sunset); }
-  .nw-node-g circle.aura { fill:none; stroke:var(--sunset); stroke-width:1.5; opacity:0; transition:opacity 0.4s; }
-  .nw-node-g:hover circle.aura { opacity:0.35; }
-  .nw-node-g:hover circle.outer { stroke:var(--sunset); }
-  .nw-node-g text { font-family:'Space Grotesk','PingFang SC',sans-serif; font-size:12px; font-weight:600; fill:var(--earth); letter-spacing:1.5px; }
-  .nw-label { font-size:11px; fill:var(--text-tertiary); font-family:'Inter','PingFang SC',sans-serif; opacity:0; transition:opacity 0.4s; }
-  .nw-node-g:hover .nw-label { opacity:1; }
-  .nw-particle { fill:var(--sunset); opacity:0.45; }
-  .nw-breath { fill:none; stroke:var(--sunset); stroke-width:1; opacity:0.15; }
-  .nw-breath.pulse { animation:nwBreath 3.5s ease-in-out infinite; }
-  @keyframes nwBreath { 0%,100%{opacity:0.06;r:22} 50%{opacity:0.25;r:28} }
+  .nw-visual { position:relative; }
+  .nw-visual svg { width:100%; height:auto; display:block; }
+  .africa-map path { fill:none; stroke:#E8DFD2; stroke-width:1.2; opacity:0.35; }
+  .nw-layer { opacity:0; transition:opacity 1s ease-out; }
+  .nw-layer.show { opacity:1; }
+  .nw-dot { cursor:default; }
+  .nw-dot:hover { opacity:1; }
   @media (max-width:768px) { .network-section { padding:80px 20px; min-height:auto; } .network-wrap { grid-template-columns:1fr; gap:48px; } }
 
   /* ====== IMPACT ====== */
@@ -382,65 +372,66 @@ if (window.location.protocol === 'file:') { window._isFileProtocol = true; }
       <span class="nw-cta"><span class="cn">探索网络</span><span class="en">Explore The Network</span></span>
     </div>
     <div class="nw-visual">
-      <svg viewBox="0 0 640 500" xmlns="http://www.w3.org/2000/svg">
-        <!-- African map outline (stylized) -->
-        <path class="nw-bg-map" d="M200,60 C230,45 270,50 310,55 C340,58 360,70 375,85 C390,100 400,115 410,130 C420,145 430,160 435,175 C440,190 442,210 440,230 C438,250 432,270 420,285 C408,300 390,310 370,315 C350,320 330,315 310,310 C290,305 270,305 250,310 C230,315 210,325 195,335 C180,342 165,340 152,330 C138,318 125,300 118,280 C110,258 108,235 112,212 C116,190 125,170 140,152 C155,135 172,120 190,110 C208,100 180,75 200,60Z"/>
-        <!-- African map detail paths -->
-        <path class="nw-bg-map" d="M280,140 C290,135 305,138 315,145 C325,152 330,160 328,170 C326,178 318,180 310,178 C300,175 290,165 285,155Z"/>
-        <path class="nw-bg-map" d="M180,200 C195,190 215,188 230,195 C245,202 250,215 245,225 C238,235 220,238 205,232Z"/>
-        <path class="nw-bg-map" d="M320,240 C335,232 355,233 365,245 C375,257 370,272 358,280 C345,288 328,284 320,272Z"/>
-        <path class="nw-bg-map" d="M240,300 C260,295 285,298 300,310 C315,322 310,340 295,348 C280,355 260,350 248,338Z"/>
-        <path class="nw-bg-map" d="M150,260 C160,252 178,250 190,258 C202,266 200,280 188,286 C176,290 160,285 150,275Z"/>
-        <!-- Madagascar -->
-        <path class="nw-bg-map" d="M430,300 C438,295 445,310 440,330 C435,350 430,360 425,350 C418,338 418,310 430,300Z"/>
+      <svg viewBox="0 0 700 540" xmlns="http://www.w3.org/2000/svg">
+        <!-- African Map -->
+        <g class="africa-map">
+          <path d="M190,55 C220,40 260,42 300,48 C340,52 365,62 385,78 C405,94 420,112 430,130 C440,148 445,168 444,190 C443,212 436,235 422,255 C408,272 388,285 368,290 C348,295 325,290 305,285 C285,280 262,280 242,288 C222,296 202,308 186,320 C170,330 155,328 142,318 C128,306 115,290 108,270 C100,248 98,222 104,200 C110,178 120,160 135,145 C150,130 168,120 185,108 C200,98 175,72 190,55Z"/>
+          <path d="M280,130 C295,122 315,125 328,135 C341,145 348,158 344,170 C340,180 328,182 318,178 C306,172 292,158 285,145Z"/>
+          <path d="M170,195 C188,182 210,180 228,188 C246,196 254,212 248,225 C240,238 220,243 202,236Z"/>
+          <path d="M320,230 C338,218 362,222 374,238 C386,254 382,272 368,282 C354,292 334,286 324,270Z"/>
+          <path d="M235,295 C258,288 286,292 304,308 C322,322 318,344 300,352 C282,360 258,354 245,340Z"/>
+          <path d="M145,252 C158,242 178,240 192,250 C206,260 204,278 190,285 C176,292 158,284 148,272Z"/>
+          <path d="M445,300 C455,293 462,312 455,335 C448,358 442,370 435,358 C426,345 426,315 445,300Z"/>
+        </g>
 
-        <!-- Lines -->
-        <line class="nw-line" id="nl-vh" x1="180" y1="300" x2="340" y2="280"/>
-        <line class="nw-line" id="nl-hb" x1="340" y1="280" x2="370" y2="180"/>
-        <line class="nw-line" id="nl-ho" x1="340" y1="280" x2="460" y2="310"/>
-        <line class="nw-line" id="nl-hc" x1="340" y1="280" x2="480" y2="220"/>
+        <!-- Route paths -->
+        <g class="nw-routes" opacity="0.4">
+          <line x1="200" y1="285" x2="340" y2="270" stroke="#D9C8B7" stroke-width="0.8"/>
+          <line x1="340" y1="270" x2="420" y2="185" stroke="#D9C8B7" stroke-width="0.8"/>
+          <line x1="340" y1="270" x2="320" y2="340" stroke="#D9C8B7" stroke-width="0.8"/>
+          <line x1="340" y1="270" x2="460" y2="305" stroke="#D9C8B7" stroke-width="0.8"/>
+          <line x1="420" y1="185" x2="480" y2="240" stroke="#D9C8B7" stroke-width="0.8"/>
+          <line x1="320" y1="340" x2="200" y2="285" stroke="#D9C8B7" stroke-width="0.8"/>
+          <line x1="340" y1="270" x2="260" y2="225" stroke="#D9C8B7" stroke-width="0.8"/>
+          <line x1="260" y1="225" x2="140" y2="260" stroke="#D9C8B7" stroke-width="0.8"/>
+        </g>
 
-        <!-- Particles -->
-        <circle class="nw-particle" id="pp0" r="2.5" cx="260" cy="290"/>
-        <circle class="nw-particle" id="pp1" r="2.5" cx="355" cy="230"/>
-        <circle class="nw-particle" id="pp2" r="2.5" cx="400" cy="295"/>
-        <circle class="nw-particle" id="pp3" r="2.5" cx="410" cy="250"/>
+        <!-- Vehicle Fleet nodes -->
+        <g class="nw-layer" id="nw-vehicles">
+          <g class="nw-dot"><circle cx="200" cy="285" r="4" fill="#F26A21"/><circle cx="200" cy="285" r="8" fill="none" stroke="#F26A21" stroke-width="0.6" opacity="0.4"/><text x="200" y="275" text-anchor="middle" font-size="9" fill="#3A2E24" font-family="Space Grotesk,'PingFang SC',sans-serif" font-weight="600">Vehicle</text></g>
+          <g class="nw-dot"><circle cx="380" cy="235" r="3.5" fill="#F26A21"/><circle cx="380" cy="235" r="7" fill="none" stroke="#F26A21" stroke-width="0.6" opacity="0.4"/></g>
+          <g class="nw-dot"><circle cx="430" cy="170" r="3.5" fill="#F26A21"/><circle cx="430" cy="170" r="7" fill="none" stroke="#F26A21" stroke-width="0.6" opacity="0.4"/></g>
+          <g class="nw-dot"><circle cx="310" cy="330" r="3" fill="#F26A21"/><circle cx="310" cy="330" r="6" fill="none" stroke="#F26A21" stroke-width="0.6" opacity="0.4"/></g>
+          <g class="nw-dot"><circle cx="155" cy="260" r="3" fill="#F26A21"/><circle cx="155" cy="260" r="6" fill="none" stroke="#F26A21" stroke-width="0.6" opacity="0.4"/></g>
+        </g>
 
-        <!-- Hub -->
-        <g class="nw-node-g" id="ng-hub" style="--ox:340px;--oy:280px">
-          <circle class="outer" cx="340" cy="280" r="32"/>
-          <circle class="inner" cx="340" cy="280" r="7"/>
-          <circle class="nw-breath pulse" cx="340" cy="280" r="22"/>
-          <text x="340" y="330" text-anchor="middle">Hub</text>
-          <text class="nw-label" x="340" y="346" text-anchor="middle">区域物流中心</text>
+        <!-- Battery Stations -->
+        <g class="nw-layer" id="nw-batteries">
+          <g class="nw-dot"><circle cx="255" cy="223" r="5" fill="#E9A23B"/><circle cx="255" cy="223" r="10" fill="none" stroke="#E9A23B" stroke-width="0.6" opacity="0.3"/><text x="255" y="210" text-anchor="middle" font-size="9" fill="#3A2E24" font-family="Space Grotesk,'PingFang SC',sans-serif" font-weight="600">Battery</text></g>
+          <g class="nw-dot"><circle cx="370" cy="290" r="4" fill="#E9A23B"/><circle cx="370" cy="290" r="8" fill="none" stroke="#E9A23B" stroke-width="0.6" opacity="0.3"/></g>
+          <g class="nw-dot"><circle cx="195" cy="305" r="3.5" fill="#E9A23B"/><circle cx="195" cy="305" r="7" fill="none" stroke="#E9A23B" stroke-width="0.6" opacity="0.3"/></g>
         </g>
-        <!-- Vehicle -->
-        <g class="nw-node-g" id="ng-veh" style="--ox:160px;--oy:300px">
-          <circle class="outer" cx="160" cy="300" r="26"/>
-          <circle class="inner" cx="160" cy="300" r="5.5"/>
-          <text x="160" y="344" text-anchor="middle">Vehicle</text>
-          <text class="nw-label" x="160" y="360" text-anchor="middle">负责末端运输</text>
+
+        <!-- Regional Hubs -->
+        <g class="nw-layer" id="nw-hubs">
+          <g class="nw-dot"><circle cx="338" cy="270" r="8" fill="#F26A21"/><circle cx="338" cy="270" r="16" fill="none" stroke="#F26A21" stroke-width="1.2" opacity="0.3"/><circle cx="338" cy="270" r="22" fill="none" stroke="#F26A21" stroke-width="0.5" opacity="0.15"><animate attributeName="r" values="16;22;16" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.3;0.05;0.3" dur="3s" repeatCount="indefinite"/></circle><text x="338" y="258" text-anchor="middle" font-size="10" fill="#3A2E24" font-family="Space Grotesk,'PingFang SC',sans-serif" font-weight="700">Hub</text></g>
+          <g class="nw-dot"><circle cx="285" cy="250" r="5" fill="#F26A21"/><circle cx="285" cy="250" r="12" fill="none" stroke="#F26A21" stroke-width="0.8" opacity="0.25"/></g>
+          <g class="nw-dot"><circle cx="385" cy="300" r="5" fill="#F26A21"/><circle cx="385" cy="300" r="12" fill="none" stroke="#F26A21" stroke-width="0.8" opacity="0.25"/></g>
         </g>
-        <!-- Battery -->
-        <g class="nw-node-g" id="ng-bat" style="--ox:390px;--oy:160px">
-          <circle class="outer" cx="390" cy="160" r="26"/>
-          <circle class="inner" cx="390" cy="160" r="5.5"/>
-          <text x="390" y="204" text-anchor="middle">Battery</text>
-          <text class="nw-label" x="390" y="220" text-anchor="middle">提供能源补给</text>
+
+        <!-- Operator Centers -->
+        <g class="nw-layer" id="nw-operators">
+          <g class="nw-dot"><circle cx="460" cy="305" r="5" fill="#D98C5F"/><circle cx="460" cy="305" r="10" fill="none" stroke="#D98C5F" stroke-width="0.6" opacity="0.3"/><text x="460" y="295" text-anchor="middle" font-size="9" fill="#3A2E24" font-family="Space Grotesk,'PingFang SC',sans-serif" font-weight="600">Operator</text></g>
+          <g class="nw-dot"><circle cx="285" cy="230" r="4" fill="#D98C5F"/><circle cx="285" cy="230" r="8" fill="none" stroke="#D98C5F" stroke-width="0.6" opacity="0.3"/></g>
         </g>
-        <!-- Operator -->
-        <g class="nw-node-g" id="ng-opr" style="--ox:480px;--oy:310px">
-          <circle class="outer" cx="480" cy="310" r="26"/>
-          <circle class="inner" cx="480" cy="310" r="5.5"/>
-          <text x="480" y="354" text-anchor="middle">Operator</text>
-          <text class="nw-label" x="480" y="370" text-anchor="middle">统一调度管理</text>
-        </g>
-        <!-- Community -->
-        <g class="nw-node-g" id="ng-com" style="--ox:500px;--oy:210px">
-          <circle class="outer" cx="500" cy="210" r="26"/>
-          <circle class="inner" cx="500" cy="210" r="5.5"/>
-          <text x="500" y="254" text-anchor="middle">Community</text>
-          <text class="nw-label" x="500" y="270" text-anchor="middle">服务终端用户</text>
+
+        <!-- Communities -->
+        <g class="nw-layer" id="nw-communities">
+          <g class="nw-dot"><circle cx="480" cy="240" r="4.5" fill="#E07B5A"/><circle cx="480" cy="240" r="9" fill="none" stroke="#E07B5A" stroke-width="0.6" opacity="0.25"/><text x="480" y="228" text-anchor="middle" font-size="9" fill="#3A2E24" font-family="Space Grotesk,'PingFang SC',sans-serif" font-weight="600">Community</text></g>
+          <g class="nw-dot"><circle cx="175" cy="318" r="3.5" fill="#E07B5A"/><circle cx="175" cy="318" r="7" fill="none" stroke="#E07B5A" stroke-width="0.6" opacity="0.25"/></g>
+          <g class="nw-dot"><circle cx="390" cy="345" r="3.5" fill="#E07B5A"/><circle cx="390" cy="345" r="7" fill="none" stroke="#E07B5A" stroke-width="0.6" opacity="0.25"/></g>
+          <g class="nw-dot"><circle cx="310" cy="170" r="3" fill="#E07B5A"/><circle cx="310" cy="170" r="6" fill="none" stroke="#E07B5A" stroke-width="0.6" opacity="0.25"/></g>
+          <g class="nw-dot"><circle cx="220" cy="345" r="3" fill="#E07B5A"/><circle cx="220" cy="345" r="6" fill="none" stroke="#E07B5A" stroke-width="0.6" opacity="0.25"/></g>
         </g>
       </svg>
     </div>
@@ -687,59 +678,26 @@ if (window._isFileProtocol) {
   var mf = document.getElementById('main-fallback'); if (mf) mf.style.display = 'block';
   console.log('📁 file:// mode — using static images');
 }
-// ===== Network Animation =====
+// ===== Network Sequential Build =====
 (function(){
   var section = document.getElementById('network');
   if (!section) return;
-  var mapEl = document.querySelector('.nw-bg-map');
-  var nodes = ['ng-hub','ng-veh','ng-bat','ng-opr','ng-com'];
-  var lines = ['nl-vh','nl-hb','nl-ho','nl-hc'];
+  var layers = ['nw-vehicles','nw-batteries','nw-hubs','nw-operators','nw-communities'];
   var started = false;
 
   new IntersectionObserver(function(entries) {
     entries.forEach(function(e) {
       if (e.isIntersecting && !started) {
         started = true;
-        // Map fade in
-        setTimeout(function() { if (mapEl) mapEl.classList.add('visible'); }, 200);
-        // Nodes appear sequentially
-        nodes.forEach(function(id, i) {
+        layers.forEach(function(id, i) {
           setTimeout(function() {
             var el = document.getElementById(id);
             if (el) el.classList.add('show');
-          }, 400 + i * 180);
+          }, 300 + i * 350);
         });
-        // Lines draw after nodes
-        setTimeout(function() {
-          lines.forEach(function(id) {
-            var el = document.getElementById(id);
-            if (el) el.classList.add('on');
-          });
-          // Particles start flowing
-          document.querySelectorAll('.nw-particle').forEach(function(p) { p.classList.add('flow'); });
-        }, 400 + nodes.length * 180);
       }
     });
-  }, { threshold: 0.35 }).observe(section);
-
-  // Particle flow along lines
-  var paths = [
-    { id:'pp0', a:160,b:300,c:340,d:280 },
-    { id:'pp1', a:340,b:280,c:390,d:160 },
-    { id:'pp2', a:340,b:280,c:480,d:310 },
-    { id:'pp3', a:340,b:280,c:500,d:210 }
-  ];
-  var ph = 0;
-  setInterval(function() {
-    ph += 0.016;
-    paths.forEach(function(p, i) {
-      var el = document.getElementById(p.id);
-      if (!el || !el.classList.contains('flow')) return;
-      var t = (Math.sin(ph + i * 0.9) + 1) / 2;
-      el.setAttribute('cx', p.a + (p.c - p.a) * t);
-      el.setAttribute('cy', p.b + (p.d - p.b) * t);
-    });
-  }, 50);
+  }, { threshold: 0.3 }).observe(section);
 })();
 
 console.log('✅ AFLO v2 — Deliver Mobility, Not Vehicles.');
