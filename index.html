@@ -517,13 +517,16 @@ function updateFrame() {
   requestAnimationFrame(updateFrame);
 }
 
-// Preload all frames
-(function preload(i) {
-  if (i > TOTAL_FRAMES) { updateFrame(); return; }
+// Start immediately, preload in background
+updateFrame();
+var loaded = new Set();
+function bgPreload(i) {
+  if (i > TOTAL_FRAMES) return;
   var pre = new Image();
-  pre.onload = function() { preload(i + 1); };
+  pre.onload = function(){ loaded.add(i); bgPreload(i+1); };
   pre.src = 'frames/frame-' + pad(i) + '.jpg';
-})(1);
+}
+bgPreload(2);
 }
 
 // ===== Smooth Scroll =====
