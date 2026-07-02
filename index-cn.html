@@ -65,6 +65,10 @@ if (window.location.protocol === 'file:') { window._isFileProtocol = true; }
   .section { padding:120px 48px; max-width:1400px; margin:0 auto; }
   .section-tag { font-size:11px; font-weight:600; letter-spacing:5px; color:var(--sunset); text-transform:uppercase; margin-bottom:16px; }
 
+  .hero-logo { position:absolute; top:100px; left:48px; z-index:5; }
+  .hero-logo img { height:220px; display:block; }
+  @media (max-width:768px) { .hero-logo { top:80px; left:20px; } .hero-logo img { height:120px; } }
+
   /* ====== HERO ====== */
   .hero {
     position:relative; width:100%; min-height:100dvh;
@@ -221,7 +225,6 @@ if (window.location.protocol === 'file:') { window._isFileProtocol = true; }
 <body>
 
 <nav class="nav" id="nav">
-  <a href="#" class="nav-logo"><img src="logo-cn.png" alt="AFLO" style="height:44px;display:block;"></a>
   <a href="index.html" class="lang-toggle" title="Switch to English">EN</a>
   <ul class="nav-links">
     <li><a href="#solution">Platform</a></li>
@@ -233,6 +236,7 @@ if (window.location.protocol === 'file:') { window._isFileProtocol = true; }
 </nav>
 
 <!-- ====== HERO ====== -->
+<div class="hero-logo"><a href="#"><img src="logo-cn.png" alt="AFLO"></a></div>
 <section class="hero" id="hero">
   <div class="hero-bg"></div>
   <div class="hero-overlay"></div>

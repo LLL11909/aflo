@@ -62,8 +62,9 @@
   .nav a:hover { color:var(--text); }
   .nav .lang-switch { padding:4px 12px; border-radius:14px; border:1px solid var(--border); font-size:11px; font-weight:600; letter-spacing:1px; }
   .nav .lang-switch:hover { border-color:var(--accent); color:var(--accent); background:rgba(233,106,34,0.06); }
-  .nav .nav-brand { position:fixed; top:28px; left:40px; z-index:101; }
-  .nav .nav-brand img { height:44px; display:block; }
+  .hero-logo { position:absolute; top:40px; left:80px; z-index:3; }
+  .hero-logo img { height:220px; display:block; }
+  @media (max-width:768px) { .hero-logo { top:24px; left:24px; } .hero-logo img { height:120px; } }
 
   /* ===== Scroll-Controlled Video Hero ===== */
   .video-hero-wrap { position:relative; height:400vh; }
@@ -235,7 +236,6 @@
 
 <!-- Floating Capsule Nav -->
 <nav class="nav" id="nav">
-  <a href="#" class="nav-brand"><img src="logo-en.png" alt="AFLO"></a>
   <a href="#platform">Platform</a>
   <a href="#gallery">Gallery</a>
   <a href="#features">Features</a>
@@ -245,6 +245,7 @@
 
 <!-- ===== SCROLL-CONTROLLED VIDEO HERO ===== -->
 <section class="video-hero-wrap" id="hero">
+  <div class="hero-logo"><a href="#"><img src="logo-en.png" alt="AFLO"></a></div>
   <div class="video-hero-sticky">
     <img id="hero-frame" src="frames/frame-001.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
 <div class="video-hero-overlay"></div>
