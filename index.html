@@ -62,7 +62,8 @@
   .nav a:hover { color:var(--text); }
   .nav .lang-switch { padding:4px 12px; border-radius:14px; border:1px solid var(--border); font-size:11px; font-weight:600; letter-spacing:1px; }
   .nav .lang-switch:hover { border-color:var(--accent); color:var(--accent); background:rgba(233,106,34,0.06); }
-  .nav .nav-brand { font-family:'Space Grotesk',sans-serif; font-size:16px; font-weight:700; letter-spacing:4px; color:var(--text); }
+  .nav .nav-brand { position:fixed; top:28px; left:40px; z-index:101; }
+  .nav .nav-brand img { height:44px; display:block; }
 
   /* ===== Scroll-Controlled Video Hero ===== */
   .video-hero-wrap { position:relative; height:400vh; }
@@ -234,7 +235,7 @@
 
 <!-- Floating Capsule Nav -->
 <nav class="nav" id="nav">
-  <a href="#" class="nav-brand"><img src="logo-en.png" alt="AFLO" style="height:24px;display:block;"></a>
+  <a href="#" class="nav-brand"><img src="logo-en.png" alt="AFLO"></a>
   <a href="#platform">Platform</a>
   <a href="#gallery">Gallery</a>
   <a href="#features">Features</a>
