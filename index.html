@@ -247,7 +247,9 @@
 <section class="video-hero-wrap" id="hero">
   <div class="hero-logo"><a href="#"><img src="logo-en.png" alt="AFLO"></a></div>
   <div class="video-hero-sticky">
-    <img id="hero-frame" src="frames/frame-001.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+    <video id="hero-video" muted playsinline preload="auto" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+      <source src="video.mp4" type="video/mp4">
+    </video>
 <div class="video-hero-overlay"></div>
     <div class="video-hero-text">
       <h1>Deliver Mobility.<br>Not Vehicles.</h1>
@@ -504,31 +506,25 @@ var lenis = new Lenis({ duration:1.2, easing:function(t){ return Math.min(1, 1.0
 function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
 requestAnimationFrame(raf);
 
-// ===== Image Sequence Scrub =====
-var TOTAL_FRAMES = 106;
-var img = document.getElementById('hero-frame');
+// ===== Video Scrubbing =====
+var video = document.getElementById('hero-video');
 var hint = document.getElementById('video-hint');
-
-function pad(n){ return n < 10 ? '00'+n : n < 100 ? '0'+n : ''+n; }
-
-function updateFrame() {
-  var p = Math.max(0, Math.min(1, -document.querySelector('.video-hero-wrap').getBoundingClientRect().top / (document.querySelector('.video-hero-wrap').offsetHeight - innerHeight)));
-  var frame = Math.floor(p * (TOTAL_FRAMES - 1)) + 1;
-  img.src = 'frames/frame-' + pad(frame) + '.jpg';
-  if (hint) hint.style.opacity = p > 0.02 ? '0' : '1';
-  requestAnimationFrame(updateFrame);
+var wrap = document.querySelector('.video-hero-wrap');
+if (video && wrap) {
+  video.pause();
+  var lastTime = -1;
+  function sync() {
+    if (video.readyState >= 1 && video.duration) {
+      var p = Math.max(0, Math.min(1, -wrap.getBoundingClientRect().top / (wrap.offsetHeight - innerHeight)));
+      var t = p * video.duration;
+      if (Math.abs(t - lastTime) > 0.12) { video.currentTime = t; lastTime = t; }
+      if (hint) hint.style.opacity = p > 0.02 ? '0' : '1';
+    }
+    requestAnimationFrame(sync);
+  }
+  video.addEventListener('loadedmetadata', function() { video.currentTime = 0; sync(); });
+  sync();
 }
-
-// Start immediately, preload in background
-updateFrame();
-var loaded = new Set();
-function bgPreload(i) {
-  if (i > TOTAL_FRAMES) return;
-  var pre = new Image();
-  pre.onload = function(){ loaded.add(i); bgPreload(i+1); };
-  pre.src = 'frames/frame-' + pad(i) + '.jpg';
-}
-bgPreload(2);
 
 // ===== Smooth Scroll =====
 document.querySelectorAll('a[href^="#"]').forEach(a => {
